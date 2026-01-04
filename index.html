@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Mirage</title>
+
+<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+
+<style>
+body{
+    background:#00AEEF;
+    color:white;
+    font-family:Arial, sans-serif;
+    text-align:center;
+    margin:0;
+    padding-top:90px;
+}
+
+.navbar{
+    position:fixed;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:15px;
+    background:rgba(255,255,255,.2);
+    padding:10px 15px;
+    border-radius:12px;
+    z-index:100;
+}
+
+.navbar button{
+    background:none;
+    border:none;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    padding:6px 12px;
+    border-radius:6px;
+}
+
+.navbar button:hover{
+    background:rgba(255,255,255,.3);
+}
+
+.container{
+    max-width:720px;
+    margin:auto;
+    background:rgba(255,255,255,.1);
+    padding:25px;
+    border-radius:15px;
+    box-shadow:5px 5px 15px rgba(0,0,0,.2);
+    transition:opacity .4s ease, transform .4s ease;
+}
+
+.hidden{
+    opacity:0;
+    transform:translateY(-15px);
+}
+
+.thumbnail{
+    max-width:150px;
+    margin:10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.thumbnail:hover{
+    transform:scale(1.1);
+}
+
+button.action{
+    background:linear-gradient(45deg,#00CFFF,#007ACC);
+    border:none;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    cursor:pointer;
+    margin:5px;
+}
+
+.submenu{
+    margin-top:20px;
+    padding-top:15px;
+    border-top:1px solid rgba(255,255,255,.3);
+}
+
+.redes-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+    gap:12px;
+    margin-top:16px;
+}
+
+.red{
+    padding:10px;
+    border-radius:10px;
+    background:rgba(255,255,255,.2);
+    font-weight:bold;
+    transition:.2s;
+}
+
+.red:hover{
+    transform:translateY(-3px);
+    background:rgba(255,255,255,.35);
+}
+
+#dog-counter{
+    margin-top:25px;
+    font-weight:bold;
+    opacity:.8;
+    text-align:center;
+}
+
+.dog-button{
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:80px;
+    cursor:pointer;
+    animation:spin 3s linear infinite;
+}
+
+#lang-btn{
+    position:fixed;
+    bottom:20px;
+    left:20px;
+    background:rgba(255,255,255,.25);
+    border:none;
+    color:white;
+    font-weight:bold;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar" id="navbar">
+    <button onclick="inicio()"></button>
+    <button onclick="fangames()"></button>
+    <button onclick="traducciones()"></button>
+    <button onclick="redes()"></button>
+</nav>
+
+<div class="container" id="content"></div>
+<div id="dog-counter">🐶</div>
+
+<button id="lang-btn" onclick="toggleLang()">ENGLISH</button>
+<img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
+
+<script>
+let content;
+let currentSection="";
+let lang="es";
+
+let dogCooldown=false;
+let dogCount=0;
+
+document.addEventListener("DOMContentLoaded",()=>{
+    content=document.getElementById("content");
+    updateNavbar();
+    inicio();
+});
+
+function updateNavbar(){
+    const b=document.querySelectorAll("#navbar button");
+    if(lang==="es"){
+        b[0].textContent="Inicio";
+        b[1].textContent="Fangames";
+        b[2].textContent="Traducciones";
+        b[3].textContent="Redes";
+    }else{
+        b[0].textContent="Home";
+        b[1].textContent="Fangames";
+        b[2].textContent="Translations";
+        b[3].textContent="Socials";
+    }
+}
+
+function toggleLang(){
+    lang = lang==="es" ? "en":"es";
+    document.getElementById("lang-btn").textContent =
+        lang==="es" ? "ENGLISH":"ESPAÑOL";
+    updateNavbar();
+    inicio();
+}
+
+function setContent(html,section){
+    if(currentSection===section && section!=="inicio") return;
+    currentSection=section;
+    content.classList.add("hidden");
+    setTimeout(()=>{
+        content.innerHTML=html;
+        content.classList.remove("hidden");
+    },300);
+}
+
+function inicio(){
+    setContent(`
+        <h1>Mirage Team</h1>
+        <p>${lang === "es"
+        ? "Somos Mirage Team, un equipo de desarrollo indie enfocado en crear videojuegos con identidad propia y experiencias que realmente se disfruten. Detrás del proyecto estamos Valens429 y SejeroDev, dos desarrolladores unidos por la pasión por los juegos y las ganas de hacer las cosas bien. Actualmente estamos trabajando en varios proyectos, a los que les dedicamos mucha atención al detalle y cuidado en cada aspecto del desarrollo. Seguinos para enterarte de novedades y avances."
+        : "We are Mirage Team, an indie game development team focused on creating games with a strong identity and enjoyable experiences. Behind the project are Valens429 and SejeroDev, two developers driven by a passion for games and the desire to do things right. We are currently working on multiple projects, giving each one a high level of attention to detail and care throughout development. Follow us to stay updated on our progress and news."}
+        </p>
+    `,"inicio");
+}
+
+
+
+function fangames(){
+    setContent(`
+        <h1>Fangames</h1>
+
+        <img src="images/f1.png" class="thumbnail" onclick="proyecto(
+            'Deltarune x Cult of the Lamb',
+            '${lang==="es"?"Fangame crossover con combates y lore oscuro.":"Crossover fangame with battles and dark lore."}',
+            'https://gamejolt.com/games/COTLXDR/975891'
+        )">
+
+        <img src="images/f2.png" class="thumbnail" onclick="proyecto(
+            'Undertale Bastille',
+            '${lang==="es"?"Proyecto inspirado en Undertale con nuevas mecánicas.":"Undertale-inspired project with new mechanics."}',
+            'https://gamejolt.com/games/Undertale-Bastille/987997'
+        )">
+
+        <img src="images/f3.png" class="thumbnail" onclick="proyecto(
+            'Papers Please España',
+            '${lang==="es"?"Una parodia de Papers Please creada a base de memes para la FakeVirus-JAM 3 del streamer Seii":"A parody of Papers Please created using memes for the FakeVirus-JAM 3 by streamer Seii"}',
+            'https://gamejolt.com/games/PAPERSPLEASECESP/997156'
+        )">
+
+        <img src="images/f4.png" class="thumbnail" onclick="proyecto(
+            'Session Zero',
+            '${lang==="es"?"¿Listo?":"Ready?"}',
+            'https://gamejolt.com/games/SessionZero/1031786'
+        )">
+
+        <div class="submenu">
+            <button class="action" onclick="proyectosExtra()">
+                ${lang==="es"?"Proyectos extra":"Extra projects"}
+            </button>
+        </div>
+    `,"fangames");
+}
+
+function proyectosExtra(){
+    setContent(`
+        <h1>${lang==="es"?"Proyectos extra":"Extra projects"}</h1>
+
+        <img src="images/py1.png" class="thumbnail" onclick="proyecto(
+            'DELTARUNE Save File Management',
+            '${lang==="es"?"Administra tus partidas de Deltarune de forma rápida, segura y personalizada":"Manage your Deltarune games quickly, securely, and with a personalized touch."}',
+            'https://gamejolt.com/games/DELTARUNESAVE/1006615'
+        )">
+
+        <img src="images/py2.PNG" class="thumbnail" onclick="proyecto(
+            'Seii´s Crackhouse',
+            '${lang==="es"?"Seii Crackhouse es una versión modificada de Raldis Crackhouse adaptada especialmente para el streamer Seii":"modified version of Raldis Crackhouse adapted especially for the streamer Seii"}',
+            'https://gamejolt.com/games/SEIICRACKHOUSE/973565'
+        )">
+
+        <div class="submenu">
+            <button class="action" onclick="fangames()">← ${lang==="es"?"Volver":"Back"}</button>
+        </div>
+    `,"extra");
+}
+
+function proyecto(nombre,desc,link){
+    setContent(`
+        <h1>${nombre}</h1>
+        <p>${desc}</p>
+        <a href="${link}" target="_blank">
+            <button class="action">${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button>
+        </a>
+        <div class="submenu">
+            <button class="action" onclick="fangames()">← ${lang==="es"?"Volver":"Back"}</button>
+        </div>
+    `,"proyecto");
+}
+
+function udtsl(){
+    setContent(`
+        <h1>Undertale: Souls Link</h1>
+
+        <p>
+            ${lang==="es"
+                ? "Traducción al español"
+                : "Spanish translation"}
+        </p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
+            <a href="udtsl/7_1 Español.png" download>
+                <button class="action" style="font-size:18px;padding:16px 26px;">
+                    📥 7_1
+                </button>
+            </a>
+
+            <a href="udtsl/7_2 Español.png" download>
+                <button class="action" style="font-size:18px;padding:16px 26px;">
+                    📥 7_2
+                </button>
+            </a>
+
+            <a href="udtsl/7_3 Español.png" download>
+                <button class="action" style="font-size:18px;padding:16px 26px;">
+                    📥 7_3
+                </button>
+            </a>
+
+            <a href="udtsl/8_1 Español.png" download>
+                <button class="action" style="font-size:18px;padding:16px 26px;">
+                    📥 8_1
+                </button>
+            </a>
+        </div>
+
+        <div class="submenu">
+            <button class="action" onclick="traducciones()">
+                ← ${lang==="es" ? "Volver" : "Back"}
+            </button>
+        </div>
+    `,"udtsl");
+}
+
+
+function traducciones(){
+    setContent(`
+        <h1>${lang==="es" ? "Traducciones" : "Translations"}</h1>
+        <img src="images/t1.png" class="thumbnail" onclick="udtsl()">
+    `,"traducciones");
+}
+
+
+function redes(){
+    setContent(`
+        <h1>${lang==="es"?"Redes":"Socials"}</h1>
+        <div class="redes-grid">
+            <a class="red" href="https://discord.gg/3faZHrnd4j" target="_blank">Discord</a>
+            <a class="red" href="https://gamejolt.com/@MirageTeam" target="_blank">GameJolt</a>
+            <a class="red" href="https://linktr.ee/MirageTeam1" target="_blank">Linktree</a>
+            <a class="red" href="https://www.youtube.com/@MirageTeamGJ" target="_blank">YouTube</a>
+        </div>
+    `,"redes");
+}
+
+
+function dog(){
+    if(dogCooldown) return;
+    dogCooldown=true;
+    dogCount++;
+    document.getElementById("dog-counter").textContent=""+dogCount;
+    const audio=new Audio("audio/dog.mp3");
+    audio.play();
+    audio.onended=()=>dogCooldown=false;
+}
+</script>
+
+</body>
+</html>
