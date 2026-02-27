@@ -8,7 +8,6 @@
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
 <style>
-/* === PANTALLA DE CARGA RETRO === */
 #loader {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100vh;
@@ -27,7 +26,6 @@
 .blink { animation: blinker 1s linear infinite; }
 @keyframes blinker { 50% { opacity: 0; } }
 
-/* === FILTRO CRT (Monitor Viejo) === */
 .crt::before {
     content: " ";
     display: block;
@@ -39,7 +37,6 @@
     pointer-events: none;
 }
 
-/* === MODAL LIGHTBOX (ZOOM CAPTURAS) === */
 #lightbox {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.85); display: flex; justify-content: center;
@@ -50,7 +47,6 @@
 #lightbox-img { max-width: 90%; max-height: 90%; border-radius: 10px; border: 2px solid #00CFFF; box-shadow: 0 0 30px rgba(0,207,255,0.5); }
 .close-btn { position: absolute; top: 20px; right: 30px; color: #00CFFF; font-size: 40px; background: none; border: none; cursor: pointer; font-weight: bold; }
 
-/* === FONDO ANIMADO GRADIENTE === */
 body {
     margin: 0;
     height: 100vh;
@@ -82,7 +78,6 @@ body.hyper-mode {
     100% { filter: hue-rotate(360deg); }
 }
 
-/* === MODO "UN SOLO PLANO" === */
 .navbar {
     position: fixed;
     top: 15px;
@@ -128,7 +123,6 @@ body.hyper-mode {
 
 .hidden { opacity: 0; transform: translateY(-15px) scale(0.95); }
 
-/* === IMÁGENES DE PORTADAS GRANDES === */
 .thumbnail {
     max-width: 190px;
     margin: 10px; 
@@ -143,9 +137,8 @@ body.hyper-mode {
     box-shadow: 0 5px 15px rgba(0,207,255,0.5);
 }
 
-/* === ESTILOS GALERÍA CAPTURAS CENTRADAS === */
 .screenshot-gallery {
-    display: flex; justify-content: center; /* ESTO CENTRA LAS IMÁGENES */
+    display: flex; justify-content: center;
     gap: 10px; overflow-x: auto; padding: 10px;
     background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 20px;
     scrollbar-width: thin; scrollbar-color: #00CFFF transparent;
@@ -238,7 +231,6 @@ button.action:hover {
 }
 #lang-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; }
 
-/* === BOTÓN MUTE === */
 #mute-btn {
     position: fixed; bottom: 40px; left: 125px; background: rgba(0,0,0,.5);
     border: 1px solid #00CFFF; color: #00CFFF; font-size: 18px; font-weight: bold;
@@ -299,7 +291,7 @@ button.action:hover {
 <img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
 
 <script>
-// === MOTOR DE MÚSICA DE FONDO Y MUTE ===
+
 const bgMusic = new Audio("audio/song.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.4;
@@ -354,7 +346,6 @@ function bindAudioToButtons() {
     });
 }
 
-// === FUNCIONES LIGHTBOX ===
 function openLightbox(src) {
     const lb = document.getElementById('lightbox');
     const img = document.getElementById('lightbox-img');
@@ -540,11 +531,9 @@ function herramientas(){
     `,"herramientas");
 }
 
-// === FUNCIÓN DE PROYECTOS CON GALERÍA DE IMÁGENES ===
 function proyecto(nombre,desc,link, backFunc, prefix){
     let galleryHTML = '';
     
-    // Si se envía un prefijo (ej. ZA), generamos los 5 slots de imágenes
     if(prefix) {
         let imgs = '';
         for(let i=1; i<=5; i++) {
@@ -562,9 +551,8 @@ function proyecto(nombre,desc,link, backFunc, prefix){
     `,"proyecto");
 }
 
-// === FUNCIONES DE TRADUCCIÓN CON GALERÍA INYECTADA ===
 function udtsl(){
-    let prefix = 'USL'; // El prefijo para buscar imágenes (ej: USL1.png, USL2.png...)
+    let prefix = 'USL';
     let imgs = '';
     for(let i=1; i<=5; i++) {
         let imgSrc = `images/${prefix}${i}.png`;
@@ -587,7 +575,7 @@ function udtsl(){
 }
 
 function purrfect2(){
-    let prefix = 'PA2_'; // El prefijo para buscar imágenes (ej: PA2_1.png, PA2_2.png...)
+    let prefix = 'PA2_';
     let imgs = '';
     for(let i=1; i<=5; i++) {
         let imgSrc = `images/${prefix}${i}.png`;
@@ -597,7 +585,7 @@ function purrfect2(){
 
     setContent(`
         ${galleryHTML}
-        <h1 style="margin-top:0;">Purrfect Apawncalypse 2</h1>
+        <h1 style="margin-top:0;">Purrfect Apawncalypse: Purrgatory Furever</h1>
         <p>${lang==="es" ? "Parche de traducción al español." : "Spanish translation patch."}</p>
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
             <a href="https://gamejolt.com/games/PurrfectApawncalypse2ESP/1053196" target="_blank"><button class="action">🎮 ${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
@@ -694,3 +682,4 @@ function dog(){
 
 </body>
 </html>
+
