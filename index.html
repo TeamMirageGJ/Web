@@ -146,7 +146,7 @@ button.action{
 
 <nav class="navbar" id="navbar">
     <button onclick="inicio()"></button>
-    <button onclick="fangames()"></button>
+    <button onclick="proyectos()"></button>
     <button onclick="traducciones()"></button>
     <button onclick="redes()"></button>
 </nav>
@@ -175,12 +175,12 @@ function updateNavbar(){
     const b=document.querySelectorAll("#navbar button");
     if(lang==="es"){
         b[0].textContent="Inicio";
-        b[1].textContent="Fangames";
+        b[1].textContent="Proyectos";
         b[2].textContent="Traducciones";
         b[3].textContent="Redes";
     }else{
         b[0].textContent="Home";
-        b[1].textContent="Fangames";
+        b[1].textContent="Projects";
         b[2].textContent="Translations";
         b[3].textContent="Socials";
     }
@@ -214,65 +214,131 @@ function inicio(){
     `,"inicio");
 }
 
-function fangames(){
+function proyectos(){
     setContent(`
-        <h1>Fangames</h1>
+        <h1>${lang==="es" ? "Proyectos" : "Projects"}</h1>
 
         <img src="images/f1.png" class="thumbnail" onclick="proyecto(
             'Deltarune x Cult of the Lamb',
             '${lang==="es"?"Fangame crossover con combates y lore oscuro.":"Crossover fangame with battles and dark lore."}',
-            'https://gamejolt.com/games/COTLXDR/975891'
+            'https://gamejolt.com/games/COTLXDR/975891',
+            'proyectos'
         )">
 
         <img src="images/f2.png" class="thumbnail" onclick="proyecto(
             'Undertale Bastille',
             '${lang==="es"?"Proyecto inspirado en Undertale con nuevas mecánicas.":"Undertale-inspired project with new mechanics."}',
-            'https://gamejolt.com/games/Undertale-Bastille/987997'
+            'https://gamejolt.com/games/Undertale-Bastille/987997',
+            'proyectos'
         )">
 
         <img src="images/f3.png" class="thumbnail" onclick="proyecto(
             'Papers Please España',
             '${lang==="es"?"Una parodia de Papers Please creada a base de memes para la FakeVirus-JAM 3 del streamer Seii":"A parody of Papers Please created using memes for the FakeVirus-JAM 3 by streamer Seii"}',
-            'https://gamejolt.com/games/PAPERSPLEASECESP/997156'
+            'https://gamejolt.com/games/PAPERSPLEASECESP/997156',
+            'proyectos'
         )">
+
+        <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+            <button class="action" onclick="proyectosIndividuales()">
+                👤 ${lang==="es"?"Proyectos Individuales":"Individual Projects"}
+            </button>
+            <button class="action" onclick="herramientas()">
+                🛠️ ${lang==="es"?"Herramientas":"Tools"}
+            </button>
+        </div>
+    `,"proyectos");
+}
+
+function proyectosIndividuales(){
+    setContent(`
+        <h1>${lang==="es"?"Proyectos Individuales":"Individual Projects"}</h1>
+        
+        <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
+            <button class="action" style="font-size:18px; padding:15px 30px;" onclick="valens429()">Valens429</button>
+            <button class="action" style="font-size:18px; padding:15px 30px;" onclick="sejerodev()">SejeroDEV</button>
+        </div>
+
+        <div class="submenu">
+            <button class="action" onclick="proyectos()">← ${lang==="es"?"Volver":"Back"}</button>
+        </div>
+    `,"proyectosIndividuales");
+}
+
+function valens429(){
+    setContent(`
+        <h1>Valens429</h1>
 
         <img src="images/f4.png" class="thumbnail" onclick="proyecto(
             'Session Zero',
             '${lang==="es"?"¿Listo?":"Ready?"}',
-            'https://gamejolt.com/games/SessionZero/1031786'
+            'https://gamejolt.com/games/SessionZero/1031786',
+            'valens429'
+        )">
+
+        <img src="images/py2.PNG" class="thumbnail" onclick="proyecto(
+            'Seii´s Crackhouse',
+            '${lang==="es"?"Seii Crackhouse es una versión modificada de Raldis Crackhouse adaptada especialmente para el streamer Seii":"modified version of Raldis Crackhouse adapted especially for the streamer Seii"}',
+            'https://gamejolt.com/games/SEIICRACKHOUSE/973565',
+            'valens429'
         )">
 
         <div class="submenu">
-            <button class="action" onclick="proyectosExtra()">
-                ${lang==="es"?"Proyectos extra":"Extra projects"}
-            </button>
+            <button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button>
         </div>
-    `,"fangames");
+    `,"valens429");
 }
 
-function proyectosExtra(){
+function sejerodev(){
     setContent(`
-        <h1>${lang==="es"?"Proyectos extra":"Extra projects"}</h1>
+        <h1>SejeroDEV</h1>
+
+        <img src="images/sonic.png" class="thumbnail" onclick="proyecto(
+            'Sonic Exodus',
+            '${lang==="es"?"Un nuevo y emocionante fangame de la saga del erizo azul.":"A new and exciting fangame from the blue blur series."}',
+            'https://gamejolt.com/games/Sonic-Exodus/1031667',
+            'sejerodev'
+        )">
+
+        <img src="images/cony.png" class="thumbnail" onclick="proyecto(
+            'Cony the Confronter',
+            '${lang==="es"?"Una aventura única llena de desafíos.":"A unique adventure full of challenges."}',
+            'https://gamejolt.com/games/Cony-the-Confronter/973146',
+            'sejerodev'
+        )">
+
+        <div class="submenu">
+            <button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button>
+        </div>
+    `,"sejerodev");
+}
+
+function herramientas(){
+    setContent(`
+        <h1>${lang==="es"?"Herramientas":"Tools"}</h1>
 
         <img src="images/py1.png" class="thumbnail" onclick="proyecto(
             'DELTARUNE Save File Management',
             '${lang==="es"?"Administra tus partidas de Deltarune de forma rápida, segura y personalizada":"Manage your Deltarune games quickly, securely, and with a personalized touch."}',
-            'https://gamejolt.com/games/DELTARUNESAVE/1006615'
+            'https://gamejolt.com/games/DELTARUNESAVE/1006615',
+            'herramientas'
         )">
 
-        <img src="images/py2.png" class="thumbnail" onclick="proyecto(
-            'Seii´s Crackhouse',
-            '${lang==="es"?"Seii Crackhouse es una versión modificada de Raldis Crackhouse adaptada especialmente para el streamer Seii":"modified version of Raldis Crackhouse adapted especially for the streamer Seii"}',
-            'https://gamejolt.com/games/SEIICRACKHOUSE/973565'
+        <img src="images/SMM.png" class="thumbnail" onclick="proyecto(
+            'Soul Mod Manager',
+            '${lang==="es"?"Un excelente gestor de mods para personalizar tu experiencia.":"An excellent mod manager to customize your experience."}',
+            'https://gamejolt.com/games/SMM/978626',
+            'herramientas'
         )">
 
         <div class="submenu">
-            <button class="action" onclick="fangames()">← ${lang==="es"?"Volver":"Back"}</button>
+            <button class="action" onclick="proyectos()">← ${lang==="es"?"Volver":"Back"}</button>
         </div>
-    `,"extra");
+    `,"herramientas");
 }
 
-function proyecto(nombre,desc,link){
+// Nueva versión de la función proyecto que acepta de dónde vienes (backFunc)
+function proyecto(nombre,desc,link, backFunc){
     setContent(`
         <h1>${nombre}</h1>
         <p>${desc}</p>
@@ -280,7 +346,7 @@ function proyecto(nombre,desc,link){
             <button class="action">${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button>
         </a>
         <div class="submenu">
-            <button class="action" onclick="fangames()">← ${lang==="es"?"Volver":"Back"}</button>
+            <button class="action" onclick="${backFunc}()">← ${lang==="es"?"Volver":"Back"}</button>
         </div>
     `,"proyecto");
 }
@@ -393,5 +459,4 @@ function dog(){
 </script>
 
 </body>
-</html> 
-
+</html>
