@@ -8,7 +8,6 @@
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
 <style>
-/* === PANTALLA DE CARGA RETRO === */
 #loader {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100vh;
@@ -27,7 +26,6 @@
 .blink { animation: blinker 1s linear infinite; }
 @keyframes blinker { 50% { opacity: 0; } }
 
-/* === FILTRO CRT (Monitor Viejo) === */
 .crt::before {
     content: " ";
     display: block;
@@ -39,7 +37,6 @@
     pointer-events: none; /* Deja hacer clic a través de él */
 }
 
-/* === FONDO ANIMADO GRADIENTE === */
 body {
     margin: 0;
     height: 100vh;
@@ -64,7 +61,6 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* === EASTER EGG: MODO HYPER (Konami Code) === */
 body.hyper-mode {
     animation: hyperRainbow 0.5s infinite;
 }
@@ -73,7 +69,6 @@ body.hyper-mode {
     100% { filter: hue-rotate(360deg); }
 }
 
-/* === MODO "UN SOLO PLANO" === */
 .navbar {
     position: fixed;
     top: 15px;
@@ -102,7 +97,7 @@ body.hyper-mode {
 }
 
 .container {
-    max-width: 720px;
+    max-width: 760px; /* Un poco más ancho para que entren 3 tarjetas cómodas */
     width: 90%;
     max-height: 65vh;
     background: rgba(0, 0, 0, 0.4);
@@ -119,9 +114,8 @@ body.hyper-mode {
 
 .hidden { opacity: 0; transform: translateY(-15px) scale(0.95); }
 
-/* === IMÁGENES MÁS GRANDES === */
 .thumbnail {
-    max-width: 150px; /* Aumentado para que se luzcan bien */
+    max-width: 150px; 
     margin: 10px; 
     border-radius: 10px;
     cursor: pointer; 
@@ -170,7 +164,6 @@ button.action:hover {
     box-shadow: 0 0 10px rgba(0,207,255,0.4);
 }
 
-/* Textos */
 .hero-subtitle {
     color: #00CFFF; font-weight: bold; text-transform: uppercase;
     letter-spacing: 3px; font-size: 13px; margin-bottom: 15px;
@@ -181,23 +174,23 @@ button.action:hover {
 
 .texto-destacado { font-size: 16px; line-height: 1.5; margin-bottom: 15px; }
 
-/* Perfiles */
-.dev-cards { display: flex; justify-content: center; gap: 20px; margin: 20px 0; flex-wrap: wrap; }
+.dev-cards { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
 .dev-card {
-    background: rgba(0, 0, 0, 0.4); padding: 12px 25px;
+    background: rgba(0, 0, 0, 0.4); padding: 12px 20px;
     border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
     transition: 0.3s; cursor: pointer;
+    flex: 1 1 120px; /* Para que se ajusten equitativamente */
+    max-width: 180px;
 }
 .dev-card:hover {
     transform: translateY(-5px); background: rgba(0, 207, 255, 0.2);
     border-color: #00CFFF; box-shadow: 0 5px 15px rgba(0, 207, 255, 0.3);
 }
 .dev-card h3 { margin: 0 0 5px 0; font-size: 18px; color: #fff; }
-.dev-card p { margin: 0; font-size: 12px; color: #00CFFF; text-transform: uppercase; font-weight: bold; }
+.dev-card p { margin: 0; font-size: 11px; color: #00CFFF; text-transform: uppercase; font-weight: bold; }
 
-/* === PERFILES MÁS GRANDES === */
 .profile-pic {
-    width: 120px; height: 120px; /* Aumentado de 100px a 120px */
+    width: 120px; height: 120px; 
     border-radius: 50%;
     object-fit: cover; border: 4px solid rgba(255,255,255,0.3);
     box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
@@ -205,7 +198,6 @@ button.action:hover {
 }
 .profile-pic:hover { transform: scale(1.05) rotate(5deg); border-color: #00CFFF; }
 
-/* Elementos Fijos */
 .site-footer {
     position: fixed; bottom: 0; left: 0; width: 100%; padding: 8px;
     font-size: 12px; background: rgba(0,0,0,0.5); z-index: 10;
@@ -226,9 +218,18 @@ button.action:hover {
 }
 .dog-button:hover { filter: drop-shadow(0 0 10px #00CFFF) brightness(1.2); }
 
+/* === AJUSTE PARA CENTRAR EL NUMERITO DEL PERRO === */
 #dog-counter {
-    position: fixed; bottom: 110px; right: 35px; font-weight: bold;
-    opacity: .9; text-align: center; z-index: 50; text-shadow: 0 0 5px black;
+    position: fixed; 
+    bottom: 115px; 
+    right: 20px; 
+    width: 70px; /* Mismo ancho y posición que el perro */
+    font-weight: bold;
+    opacity: .9; 
+    text-align: center; 
+    z-index: 50; 
+    text-shadow: 0 0 5px black;
+    pointer-events: none; /* Para que no bloquee clics accidentales */
 }
 @keyframes spin { to {transform: rotate(360deg);} }
 </style>
@@ -255,7 +256,21 @@ button.action:hover {
 <img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
 
 <script>
-// === MOTOR DE AUDIO SINTETIZADO (Cero archivos externos necesarios) ===
+// === MOTOR DE MÚSICA DE FONDO (REPRODUCCIÓN INFINITA) ===
+const bgMusic = new Audio("audio/song.wav");
+bgMusic.loop = true;
+bgMusic.volume = 0.4; // Nivel de volumen al 40% para que sea de fondo y no sature
+let musicStarted = false;
+
+// Los navegadores requieren interacción del usuario para reproducir audio
+document.addEventListener("click", () => {
+    if (!musicStarted) {
+        bgMusic.play().catch(e => console.log("Música iniciada correctamente."));
+        musicStarted = true;
+    }
+});
+// ========================================================
+
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
 
@@ -273,11 +288,9 @@ function playTone(freq, type, duration, vol) {
 function sfxHover() { playTone(800, 'sine', 0.1, 0.05); }
 function sfxClick() { playTone(400, 'square', 0.15, 0.1); }
 
-// Inyectar sonidos a los botones dinámicamente
 function bindAudioToButtons() {
     const interactables = document.querySelectorAll('button, .thumbnail, .dev-card, .red');
     interactables.forEach(el => {
-        // Evitamos duplicar eventos
         if(!el.dataset.audioBound) {
             el.addEventListener('mouseenter', sfxHover);
             el.addEventListener('mousedown', sfxClick);
@@ -285,9 +298,7 @@ function bindAudioToButtons() {
         }
     });
 }
-// ====================================================================
 
-// === LÓGICA DE PANTALLA DE CARGA ===
 window.addEventListener('load', () => {
     setTimeout(() => {
         document.getElementById('load-text').innerHTML = "> ACCESS GRANTED<span class='blink'>_</span>";
@@ -297,9 +308,7 @@ window.addEventListener('load', () => {
         }, 500);
     }, 1000);
 });
-// ===================================
 
-// === EASTER EGG: CÓDIGO KONAMI ===
 const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 let konamiIndex = 0;
 document.addEventListener('keydown', (e) => {
@@ -312,7 +321,6 @@ document.addEventListener('keydown', (e) => {
         }
     } else { konamiIndex = 0; }
 });
-// =================================
 
 let content;
 let currentSection="";
@@ -357,7 +365,7 @@ function setContent(html,section){
     setTimeout(()=>{
         content.innerHTML=html;
         content.classList.remove("hidden");
-        bindAudioToButtons(); // Volvemos a atar los sonidos a los nuevos botones
+        bindAudioToButtons();
     },300);
 }
 
@@ -365,7 +373,7 @@ function inicio(){
     setContent(`
         <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Mirage Team</h1>
         <div class="hero-subtitle">
-            ${lang === "es" ? "⚠️ Estudio Indie (Nivel 1) ⚠️" : "⚠️ Indie Studio (Level 1) ⚠️"}
+            ${lang === "es" ? "🛠️ Desarrolladores Indie Principiantes 🛠️" : "🛠️ Beginner Indie Developers 🛠️️"}
         </div>
         <p class="texto-destacado">
         ${lang === "es"
@@ -378,6 +386,9 @@ function inicio(){
             </div>
             <div class="dev-card" onclick="sejerodev()">
                 <h3>SejeroDev</h3><p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
+            </div>
+            <div class="dev-card" onclick="zerex()">
+                <h3>Zerex</h3><p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
             </div>
         </div>
         <button class="action" onclick="proyectos()" style="font-size: 16px; padding: 12px 24px;">
@@ -402,9 +413,10 @@ function proyectos(){
 function proyectosIndividuales(){
     setContent(`
         <h1 style="margin-top:0;">${lang==="es"?"Proyectos Individuales":"Individual Projects"}</h1>
-        <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
-            <button class="action" style="font-size:18px; padding:15px 30px;" onclick="valens429()">Valens429</button>
-            <button class="action" style="font-size:18px; padding:15px 30px;" onclick="sejerodev()">SejeroDEV</button>
+        <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
+            <button class="action" style="font-size:16px; padding:12px 24px;" onclick="valens429()">Valens429</button>
+            <button class="action" style="font-size:16px; padding:12px 24px;" onclick="sejerodev()">SejeroDEV</button>
+            <button class="action" style="font-size:16px; padding:12px 24px;" onclick="zerex()">Zerex</button>
         </div>
         <div class="submenu"><button class="action" onclick="proyectos()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"proyectosIndividuales");
@@ -426,6 +438,28 @@ function sejerodev(){
         <img src="images/cony.png" class="thumbnail" onclick="proyecto('Cony the Confronter','${lang==="es"?"Una aventura única llena de desafíos.":"A unique adventure full of challenges."}','https://gamejolt.com/games/Cony-the-Confronter/973146','sejerodev')">
         <div class="submenu"><button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"sejerodev");
+}
+
+function zerex(){
+    setContent(`
+        <h1 style="margin-top:0;">Zerex</h1>
+        
+        <img src="images/zerex1.png" class="thumbnail" alt="Zerex Adventure" onclick="proyecto(
+            'Zerex Adventure',
+            '${lang==="es"?"¿Podrás enviar a Zerex de vuelta a casa? ¿O morirás en el intento...?":"Will you be able to send Zerex back home? Or will you die trying...?"}',
+            'https://gamejolt.com/games/ZA/1035816',
+            'zerex'
+        )">
+
+        <img src="images/zerex2.png" class="thumbnail" alt="RetornedTale" onclick="proyecto(
+            'RetornedTale',
+            '${lang==="es"?"has caido a un mundo bajo tierra en busca de algo, una voluntad que te llama, al rescate, manten tu esperanza radiante y sigue adelante, bex.":"You have fallen into a world underground in search of something, a will that calls you to the rescue, keep your hope radiant and move on, bex."}',
+            'https://gamejolt.com/games/RETORNEDTALE/1031100',
+            'zerex'
+        )">
+
+        <div class="submenu"><button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button></div>
+    `,"zerex");
 }
 
 function herramientas(){
@@ -488,9 +522,10 @@ function redes(){
             <a class="red" href="https://linktr.ee/MirageTeam1" target="_blank">Linktree</a>
             <a class="red" href="https://www.youtube.com/@MirageTeamGJ" target="_blank">YouTube</a>
         </div>
-        <div class="submenu" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
-            <button class="action" onclick="redesValens()">👤 ${lang==="es"?"Redes Valens429":"Valens429 Socials"}</button>
-            <button class="action" onclick="redesSejero()">👤 ${lang==="es"?"Redes SejeroDEV":"SejeroDEV Socials"}</button>
+        <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
+            <button class="action" onclick="redesValens()">👤 Valens429</button>
+            <button class="action" onclick="redesSejero()">👤 SejeroDEV</button>
+            <button class="action" onclick="redesZerex()">👤 Zerex</button>
         </div>
     `,"redes");
 }
@@ -525,6 +560,21 @@ function redesSejero(){
         </div>
         <div class="submenu"><button class="action" onclick="redes()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"redesSejero");
+}
+
+function redesZerex(){
+    setContent(`
+        <img src="images/zerex.png" class="profile-pic" alt="Zerex">
+        <h1 style="margin-top: 5px;">Zerex</h1>
+        <p style="color: #00CFFF; margin-top: 0;">${lang==="es"?"Mis redes personales":"My personal links"}</p>
+        <div class="redes-grid">
+            <a class="red" href="https://gamejolt.com/@Zerex_Studio" target="_blank">GameJolt</a>
+            <a class="red" href="https://discord.gg/V2gjYa8KEK" target="_blank">Discord</a>
+            <a class="red" href="#" target="_blank">None / X</a>
+            <a class="red" href="#" target="_blank">None</a>
+        </div>
+        <div class="submenu"><button class="action" onclick="redes()">← ${lang==="es"?"Volver":"Back"}</button></div>
+    `,"redesZerex");
 }
 
 function dog(){
