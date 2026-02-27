@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
 <style>
+/* === PANTALLA DE CARGA RETRO === */
 #loader {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100vh;
@@ -26,6 +27,7 @@
 .blink { animation: blinker 1s linear infinite; }
 @keyframes blinker { 50% { opacity: 0; } }
 
+/* === FILTRO CRT (Monitor Viejo) === */
 .crt::before {
     content: " ";
     display: block;
@@ -34,9 +36,21 @@
     background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
     background-size: 100% 3px;
     z-index: 999;
-    pointer-events: none; /* Deja hacer clic a través de él */
+    pointer-events: none;
 }
 
+/* === MODAL LIGHTBOX (ZOOM CAPTURAS) === */
+#lightbox {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); display: flex; justify-content: center;
+    align-items: center; z-index: 2000; opacity: 0; visibility: hidden;
+    transition: opacity 0.3s; backdrop-filter: blur(5px);
+}
+#lightbox.active { opacity: 1; visibility: visible; }
+#lightbox-img { max-width: 90%; max-height: 90%; border-radius: 10px; border: 2px solid #00CFFF; box-shadow: 0 0 30px rgba(0,207,255,0.5); }
+.close-btn { position: absolute; top: 20px; right: 30px; color: #00CFFF; font-size: 40px; background: none; border: none; cursor: pointer; font-weight: bold; }
+
+/* === FONDO ANIMADO GRADIENTE === */
 body {
     margin: 0;
     height: 100vh;
@@ -51,7 +65,6 @@ body {
     background: linear-gradient(-45deg, #00AEEF, #004b87, #0b1021, #007ACC);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
-    /* Cursor personalizado sutil */
     cursor: crosshair; 
 }
 
@@ -69,6 +82,7 @@ body.hyper-mode {
     100% { filter: hue-rotate(360deg); }
 }
 
+/* === MODO "UN SOLO PLANO" === */
 .navbar {
     position: fixed;
     top: 15px;
@@ -77,7 +91,7 @@ body.hyper-mode {
     display: flex;
     gap: 15px;
     background: rgba(255,255,255,.1);
-    backdrop-filter: blur(10px); /* Efecto vidrio esmerilado */
+    backdrop-filter: blur(10px);
     padding: 10px 15px;
     border-radius: 12px;
     z-index: 100;
@@ -97,7 +111,7 @@ body.hyper-mode {
 }
 
 .container {
-    max-width: 760px; /* Un poco más ancho para que entren 3 tarjetas cómodas */
+    max-width: 760px;
     width: 90%;
     max-height: 65vh;
     background: rgba(0, 0, 0, 0.4);
@@ -114,8 +128,9 @@ body.hyper-mode {
 
 .hidden { opacity: 0; transform: translateY(-15px) scale(0.95); }
 
+/* === IMÁGENES DE PORTADAS GRANDES === */
 .thumbnail {
-    max-width: 150px; 
+    max-width: 190px;
     margin: 10px; 
     border-radius: 10px;
     cursor: pointer; 
@@ -127,6 +142,18 @@ body.hyper-mode {
     border-color: #00CFFF;
     box-shadow: 0 5px 15px rgba(0,207,255,0.5);
 }
+
+/* === ESTILOS GALERÍA CAPTURAS CENTRADAS === */
+.screenshot-gallery {
+    display: flex; justify-content: center; /* ESTO CENTRA LAS IMÁGENES */
+    gap: 10px; overflow-x: auto; padding: 10px;
+    background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 20px;
+    scrollbar-width: thin; scrollbar-color: #00CFFF transparent;
+}
+.screenshot-gallery::-webkit-scrollbar { height: 6px; }
+.screenshot-gallery::-webkit-scrollbar-thumb { background-color: #00CFFF; border-radius: 3px; }
+.screenshot { height: 80px; width: auto; object-fit: cover; border-radius: 5px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
+.screenshot:hover { transform: scale(1.05); border-color: #00CFFF; box-shadow: 0 0 10px rgba(0,207,255,0.3); }
 
 button.action {
     background: linear-gradient(45deg,#00CFFF,#007ACC);
@@ -179,7 +206,7 @@ button.action:hover {
     background: rgba(0, 0, 0, 0.4); padding: 12px 20px;
     border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
     transition: 0.3s; cursor: pointer;
-    flex: 1 1 120px; /* Para que se ajusten equitativamente */
+    flex: 1 1 120px;
     max-width: 180px;
 }
 .dev-card:hover {
@@ -211,6 +238,15 @@ button.action:hover {
 }
 #lang-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; }
 
+/* === BOTÓN MUTE === */
+#mute-btn {
+    position: fixed; bottom: 40px; left: 125px; background: rgba(0,0,0,.5);
+    border: 1px solid #00CFFF; color: #00CFFF; font-size: 18px; font-weight: bold;
+    padding: 8px 14px; border-radius: 10px; cursor: pointer; z-index: 50;
+    transition: 0.2s;
+}
+#mute-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; }
+
 .dog-button {
     position: fixed; bottom: 40px; right: 20px; width: 70px;
     cursor: pointer; animation: spin 4s linear infinite; z-index: 50;
@@ -218,25 +254,31 @@ button.action:hover {
 }
 .dog-button:hover { filter: drop-shadow(0 0 10px #00CFFF) brightness(1.2); }
 
-/* === AJUSTE PARA CENTRAR EL NUMERITO DEL PERRO === */
 #dog-counter {
     position: fixed; 
     bottom: 115px; 
     right: 20px; 
-    width: 70px; /* Mismo ancho y posición que el perro */
+    width: 70px; 
     font-weight: bold;
     opacity: .9; 
     text-align: center; 
     z-index: 50; 
     text-shadow: 0 0 5px black;
-    pointer-events: none; /* Para que no bloquee clics accidentales */
+    pointer-events: none;
 }
 @keyframes spin { to {transform: rotate(360deg);} }
 </style>
 </head>
 
-<body class="crt"> <div id="loader">
+<body class="crt"> 
+
+<div id="loader">
     <span id="load-text">> SYSTEM BOOTING<span class="blink">_</span></span>
+</div>
+
+<div id="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" src="" alt="Zoom">
+    <button class="close-btn">&times;</button>
 </div>
 
 <nav class="navbar" id="navbar">
@@ -253,23 +295,36 @@ button.action:hover {
 <footer class="site-footer" id="site-footer"></footer>
 
 <button id="lang-btn" onclick="toggleLang()">ENGLISH</button>
+<button id="mute-btn" onclick="toggleMute()">🔈</button>
 <img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
 
 <script>
-// === MOTOR DE MÚSICA DE FONDO (REPRODUCCIÓN INFINITA) ===
+// === MOTOR DE MÚSICA DE FONDO Y MUTE ===
 const bgMusic = new Audio("audio/song.wav");
 bgMusic.loop = true;
-bgMusic.volume = 0.4; // Nivel de volumen al 40% para que sea de fondo y no sature
+bgMusic.volume = 0.4;
 let musicStarted = false;
+let isMuted = false;
 
-// Los navegadores requieren interacción del usuario para reproducir audio
 document.addEventListener("click", () => {
-    if (!musicStarted) {
-        bgMusic.play().catch(e => console.log("Música iniciada correctamente."));
+    if (!musicStarted && !isMuted) {
+        bgMusic.play().catch(e => console.log("Interacción necesaria para audio."));
         musicStarted = true;
     }
 });
-// ========================================================
+
+function toggleMute() {
+    isMuted = !isMuted;
+    const muteBtn = document.getElementById('mute-btn');
+    if (isMuted) {
+        bgMusic.pause();
+        muteBtn.textContent = '🔇';
+    } else {
+        muteBtn.textContent = '🔈';
+        if(musicStarted) bgMusic.play();
+    }
+    sfxClick();
+}
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 const audioCtx = new AudioContext();
@@ -289,7 +344,7 @@ function sfxHover() { playTone(800, 'sine', 0.1, 0.05); }
 function sfxClick() { playTone(400, 'square', 0.15, 0.1); }
 
 function bindAudioToButtons() {
-    const interactables = document.querySelectorAll('button, .thumbnail, .dev-card, .red');
+    const interactables = document.querySelectorAll('button, .thumbnail, .dev-card, .red, .screenshot');
     interactables.forEach(el => {
         if(!el.dataset.audioBound) {
             el.addEventListener('mouseenter', sfxHover);
@@ -297,6 +352,18 @@ function bindAudioToButtons() {
             el.dataset.audioBound = "true";
         }
     });
+}
+
+// === FUNCIONES LIGHTBOX ===
+function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    img.src = src;
+    lb.classList.add('active');
+    sfxClick();
+}
+function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
 }
 
 window.addEventListener('load', () => {
@@ -316,7 +383,7 @@ document.addEventListener('keydown', (e) => {
         konamiIndex++;
         if (konamiIndex === konamiCode.length) {
             document.body.classList.toggle('hyper-mode');
-            playTone(1200, 'square', 0.5, 0.2); // Sonido de victoria
+            playTone(1200, 'square', 0.5, 0.2);
             konamiIndex = 0;
         }
     } else { konamiIndex = 0; }
@@ -400,9 +467,9 @@ function inicio(){
 function proyectos(){
     setContent(`
         <h1 style="margin-top:0;">${lang==="es" ? "Proyectos" : "Projects"}</h1>
-        <img src="images/f1.png" class="thumbnail" onclick="proyecto('Deltarune x Cult of the Lamb','${lang==="es"?"Fangame crossover con combates y lore oscuro.":"Crossover fangame with battles and dark lore."}','https://gamejolt.com/games/COTLXDR/975891','proyectos')">
-        <img src="images/f2.png" class="thumbnail" onclick="proyecto('Undertale Bastille','${lang==="es"?"Proyecto inspirado en Undertale con nuevas mecánicas.":"Undertale-inspired project with new mechanics."}','https://gamejolt.com/games/Undertale-Bastille/987997','proyectos')">
-        <img src="images/f3.png" class="thumbnail" onclick="proyecto('Papers Please España','${lang==="es"?"Una parodia de Papers Please creada a base de memes.":"A parody of Papers Please created using memes."}','https://gamejolt.com/games/PAPERSPLEASECESP/997156','proyectos')">
+        <img src="images/f1.png" class="thumbnail" onclick="proyecto('Deltarune x Cult of the Lamb','${lang==="es"?"Fangame crossover con combates y lore oscuro.":"Crossover fangame with battles and dark lore."}','https://gamejolt.com/games/COTLXDR/975891','proyectos','DXC')">
+        <img src="images/f2.png" class="thumbnail" onclick="proyecto('Undertale Bastille','${lang==="es"?"Proyecto inspirado en Undertale con nuevas mecánicas.":"Undertale-inspired project with new mechanics."}','https://gamejolt.com/games/Undertale-Bastille/987997','proyectos','UB')">
+        <img src="images/f3.png" class="thumbnail" onclick="proyecto('Papers Please España','${lang==="es"?"Una parodia de Papers Please creada a base de memes.":"A parody of Papers Please created using memes."}','https://gamejolt.com/games/PAPERSPLEASECESP/997156','proyectos','PPE')">
         <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
             <button class="action" onclick="proyectosIndividuales()">👤 ${lang==="es"?"Proyectos Individuales":"Individual Projects"}</button>
             <button class="action" onclick="herramientas()">🛠️ ${lang==="es"?"Herramientas":"Tools"}</button>
@@ -425,8 +492,8 @@ function proyectosIndividuales(){
 function valens429(){
     setContent(`
         <h1 style="margin-top:0;">Valens429</h1>
-        <img src="images/f4.png" class="thumbnail" onclick="proyecto('Session Zero','${lang==="es"?"¿Listo?":"Ready?"}','https://gamejolt.com/games/SessionZero/1031786','valens429')">
-        <img src="images/py2.PNG" class="thumbnail" onclick="proyecto('Seii´s Crackhouse','${lang==="es"?"Versión modificada de Raldis Crackhouse para Seii.":"Modified version of Raldis Crackhouse for Seii."}','https://gamejolt.com/games/SEIICRACKHOUSE/973565','valens429')">
+        <img src="images/f4.png" class="thumbnail" onclick="proyecto('Session Zero','${lang==="es"?"¿Listo?":"Ready?"}','https://gamejolt.com/games/SessionZero/1031786','valens429','SZ')">
+        <img src="images/py2.PNG" class="thumbnail" onclick="proyecto('Seii´s Crackhouse','${lang==="es"?"Versión modificada de Raldis Crackhouse para Seii.":"Modified version of Raldis Crackhouse for Seii."}','https://gamejolt.com/games/SEIICRACKHOUSE/973565','valens429','SC')">
         <div class="submenu"><button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"valens429");
 }
@@ -434,8 +501,8 @@ function valens429(){
 function sejerodev(){
     setContent(`
         <h1 style="margin-top:0;">SejeroDEV</h1>
-        <img src="images/sonic.png" class="thumbnail" onclick="proyecto('Sonic Exodus','${lang==="es"?"Un nuevo fangame de la saga del erizo azul.":"A new fangame from the blue blur series."}','https://gamejolt.com/games/Sonic-Exodus/1031667','sejerodev')">
-        <img src="images/cony.png" class="thumbnail" onclick="proyecto('Cony the Confronter','${lang==="es"?"Una aventura única llena de desafíos.":"A unique adventure full of challenges."}','https://gamejolt.com/games/Cony-the-Confronter/973146','sejerodev')">
+        <img src="images/sonic.png" class="thumbnail" onclick="proyecto('Sonic Exodus','${lang==="es"?"Un nuevo fangame de la saga del erizo azul.":"A new fangame from the blue blur series."}','https://gamejolt.com/games/Sonic-Exodus/1031667','sejerodev','SE')">
+        <img src="images/cony.png" class="thumbnail" onclick="proyecto('Cony the Confronter','${lang==="es"?"Una aventura única llena de desafíos.":"A unique adventure full of challenges."}','https://gamejolt.com/games/Cony-the-Confronter/973146','sejerodev','CTC')">
         <div class="submenu"><button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"sejerodev");
 }
@@ -448,14 +515,16 @@ function zerex(){
             'Zerex Adventure',
             '${lang==="es"?"¿Podrás enviar a Zerex de vuelta a casa? ¿O morirás en el intento...?":"Will you be able to send Zerex back home? Or will you die trying...?"}',
             'https://gamejolt.com/games/ZA/1035816',
-            'zerex'
+            'zerex',
+            'ZA'
         )">
 
         <img src="images/zerex2.png" class="thumbnail" alt="RetornedTale" onclick="proyecto(
             'RetornedTale',
             '${lang==="es"?"has caido a un mundo bajo tierra en busca de algo, una voluntad que te llama, al rescate, manten tu esperanza radiante y sigue adelante, bex.":"You have fallen into a world underground in search of something, a will that calls you to the rescue, keep your hope radiant and move on, bex."}',
             'https://gamejolt.com/games/RETORNEDTALE/1031100',
-            'zerex'
+            'zerex',
+            'RT'
         )">
 
         <div class="submenu"><button class="action" onclick="proyectosIndividuales()">← ${lang==="es"?"Volver":"Back"}</button></div>
@@ -465,22 +534,46 @@ function zerex(){
 function herramientas(){
     setContent(`
         <h1 style="margin-top:0;">${lang==="es"?"Herramientas":"Tools"}</h1>
-        <img src="images/py1.png" class="thumbnail" onclick="proyecto('DELTARUNE Save File Management','${lang==="es"?"Administra tus partidas de forma rápida y segura.":"Manage your games quickly and securely."}','https://gamejolt.com/games/DELTARUNESAVE/1006615','herramientas')">
-        <img src="images/SMM.png" class="thumbnail" onclick="proyecto('Soul Mod Manager','${lang==="es"?"Un gestor de mods para personalizar tu experiencia.":"A mod manager to customize your experience."}','https://gamejolt.com/games/SMM/978626','herramientas')">
+        <img src="images/py1.png" class="thumbnail" onclick="proyecto('DELTARUNE Save File Management','${lang==="es"?"Administra tus partidas de forma rápida y segura.":"Manage your games quickly and securely."}','https://gamejolt.com/games/DELTARUNESAVE/1006615','herramientas','DSFM')">
+        <img src="images/SMM.png" class="thumbnail" onclick="proyecto('Soul Mod Manager','${lang==="es"?"Un gestor de mods para personalizar tu experiencia.":"A mod manager to customize your experience."}','https://gamejolt.com/games/SMM/978626','herramientas','SMM')">
         <div class="submenu"><button class="action" onclick="proyectos()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"herramientas");
 }
 
-function proyecto(nombre,desc,link, backFunc){
+// === FUNCIÓN DE PROYECTOS CON GALERÍA DE IMÁGENES ===
+function proyecto(nombre,desc,link, backFunc, prefix){
+    let galleryHTML = '';
+    
+    // Si se envía un prefijo (ej. ZA), generamos los 5 slots de imágenes
+    if(prefix) {
+        let imgs = '';
+        for(let i=1; i<=5; i++) {
+            let imgSrc = `images/${prefix}${i}.png`;
+            imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
+        }
+        galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+    }
+
     setContent(`
+        ${galleryHTML}
         <h1 style="margin-top:0;">${nombre}</h1><p>${desc}</p>
         <a href="${link}" target="_blank"><button class="action">${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
         <div class="submenu"><button class="action" onclick="${backFunc}()">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"proyecto");
 }
 
+// === FUNCIONES DE TRADUCCIÓN CON GALERÍA INYECTADA ===
 function udtsl(){
+    let prefix = 'USL'; // El prefijo para buscar imágenes (ej: USL1.png, USL2.png...)
+    let imgs = '';
+    for(let i=1; i<=5; i++) {
+        let imgSrc = `images/${prefix}${i}.png`;
+        imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
+    }
+    let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+
     setContent(`
+        ${galleryHTML}
         <h1 style="margin-top:0;">Undertale: Souls Link</h1>
         <p>${lang==="es" ? "Traducción al español" : "Spanish translation"}</p>
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
@@ -494,7 +587,16 @@ function udtsl(){
 }
 
 function purrfect2(){
+    let prefix = 'PA2_'; // El prefijo para buscar imágenes (ej: PA2_1.png, PA2_2.png...)
+    let imgs = '';
+    for(let i=1; i<=5; i++) {
+        let imgSrc = `images/${prefix}${i}.png`;
+        imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
+    }
+    let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+
     setContent(`
+        ${galleryHTML}
         <h1 style="margin-top:0;">Purrfect Apawncalypse 2</h1>
         <p>${lang==="es" ? "Parche de traducción al español." : "Spanish translation patch."}</p>
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
@@ -582,12 +684,11 @@ function dog(){
     dogCooldown=true;
     dogCount++;
     document.getElementById("dog-counter").textContent=""+dogCount;
-    // Agregamos el bloop también al perro por si falla su audio
     sfxClick();
     const audio=new Audio("audio/dog.mp3");
     audio.play().catch(e => console.log("Audio de perro no encontrado, usando backup sintetizado"));
     audio.onended=()=>dogCooldown=false;
-    setTimeout(() => dogCooldown=false, 3000); // Failsafe
+    setTimeout(() => dogCooldown=false, 3000); 
 }
 </script>
 
