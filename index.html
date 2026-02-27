@@ -8,136 +8,248 @@
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
 <style>
-body{
-    background:#00AEEF;
-    color:white;
-    font-family:Arial, sans-serif;
-    text-align:center;
-    margin:0;
-    padding-top:90px;
+/* === MODO "UN SOLO PLANO" === */
+body {
+    background: #00AEEF;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    height: 100vh; /* Ocupa exactamente la pantalla */
+    overflow: hidden; /* Adiós barra de desplazamiento general */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Centra el contenedor en el medio exacto */
 }
 
-.navbar{
-    position:fixed;
-    top:10px;
-    left:50%;
-    transform:translateX(-50%);
-    display:flex;
-    gap:15px;
-    background:rgba(255,255,255,.2);
-    padding:10px 15px;
-    border-radius:12px;
-    z-index:100;
+.navbar {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    background: rgba(255,255,255,.2);
+    padding: 10px 15px;
+    border-radius: 12px;
+    z-index: 100;
 }
 
-.navbar button{
-    background:none;
-    border:none;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-    padding:6px 12px;
-    border-radius:6px;
+.navbar button {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
 }
 
-.navbar button:hover{
-    background:rgba(255,255,255,.3);
+.navbar button:hover {
+    background: rgba(255,255,255,.3);
 }
 
-.container{
-    max-width:720px;
-    margin:auto;
-    background:rgba(255,255,255,.1);
-    padding:25px;
-    border-radius:15px;
-    box-shadow:5px 5px 15px rgba(0,0,0,.2);
-    transition:opacity .4s ease, transform .4s ease;
+.container {
+    max-width: 720px;
+    width: 90%;
+    max-height: 65vh; /* Limita la altura para que no choque con los bordes */
+    background: rgba(255,255,255,.1);
+    padding: 20px 25px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,.2);
+    transition: opacity .4s ease, transform .4s ease;
+    
+    /* Scroll invisible interno por si la pantalla es muy pequeña */
+    overflow-y: auto; 
+    -ms-overflow-style: none;  /* IE y Edge */
+    scrollbar-width: none;  /* Firefox */
 }
 
-.hidden{
-    opacity:0;
-    transform:translateY(-15px);
+/* Ocultar barra de desplazamiento en Chrome/Safari/Opera */
+.container::-webkit-scrollbar {
+    display: none;
 }
 
-.thumbnail{
-    max-width:150px;
-    margin:10px;
-    border-radius:10px;
-    cursor:pointer;
-    transition:.3s;
+.hidden {
+    opacity: 0;
+    transform: translateY(-15px);
 }
 
-.thumbnail:hover{
-    transform:scale(1.1);
+/* Imágenes un poco más pequeñas para ahorrar espacio vertical */
+.thumbnail {
+    max-width: 110px; 
+    margin: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s;
 }
 
-button.action{
-    background:linear-gradient(45deg,#00CFFF,#007ACC);
-    border:none;
-    color:white;
-    padding:10px 18px;
-    border-radius:8px;
-    cursor:pointer;
-    margin:5px;
+.thumbnail:hover {
+    transform: scale(1.1);
 }
 
-.submenu{
-    margin-top:20px;
-    padding-top:15px;
-    border-top:1px solid rgba(255,255,255,.3);
+button.action {
+    background: linear-gradient(45deg,#00CFFF,#007ACC);
+    border: none;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 5px;
 }
 
-.redes-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-    gap:12px;
-    margin-top:16px;
+.submenu {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,.3);
 }
 
-.red{
-    padding:10px;
-    border-radius:10px;
-    background:rgba(255,255,255,.2);
-    font-weight:bold;
-    transition:.2s;
+.redes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
+    gap: 12px;
+    margin-top: 16px;
 }
 
-.red:hover{
-    transform:translateY(-3px);
-    background:rgba(255,255,255,.35);
+.red {
+    padding: 10px;
+    border-radius: 10px;
+    background: rgba(255,255,255,.2);
+    font-weight: bold;
+    transition: .2s;
+    text-decoration: none;
+    color: white;
+    font-size: 14px; /* Un pelín más pequeño para que entren bien los nombres largos */
 }
 
-#dog-counter{
-    margin-top:25px;
-    font-weight:bold;
-    opacity:.8;
-    text-align:center;
+.red:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,.35);
 }
 
-.dog-button{
-    position:fixed;
-    bottom:20px;
-    right:20px;
-    width:80px;
-    cursor:pointer;
-    animation:spin 3s linear infinite;
+/* Estilos de Textos y Cartas */
+.hero-subtitle {
+    color: #E1F5FE;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 13px;
+    margin-bottom: 15px;
+    background: rgba(0,0,0,0.15);
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 20px;
 }
 
-#lang-btn{
-    position:fixed;
-    bottom:20px;
-    left:20px;
-    background:rgba(255,255,255,.25);
-    border:none;
-    color:white;
-    font-weight:bold;
-    padding:10px 16px;
-    border-radius:10px;
-    cursor:pointer;
+.texto-destacado {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
 }
 
-@keyframes spin{
-    to{transform:rotate(360deg);}
+.dev-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.dev-card {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px 25px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.dev-card:hover {
+    transform: translateY(-5px);
+    background: rgba(0, 0, 0, 0.3);
+    border-color: #00CFFF;
+    box-shadow: 0 5px 15px rgba(0, 207, 255, 0.3);
+}
+
+.dev-card h3 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #fff;
+}
+
+.dev-card p {
+    margin: 0;
+    font-size: 12px;
+    color: #B3E5FC;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255,255,255,0.3);
+    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.05);
+    border-color: #fff;
+}
+
+/* === ELEMENTOS FIJOS AJUSTADOS === */
+.site-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 8px;
+    font-size: 12px;
+    background: rgba(0,0,0,0.15);
+    z-index: 10;
+}
+
+#lang-btn {
+    position: fixed;
+    bottom: 40px; /* Un poco más arriba para no pisar el footer */
+    left: 20px;
+    background: rgba(255,255,255,.25);
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 50;
+}
+
+.dog-button {
+    position: fixed;
+    bottom: 40px; /* Un poco más arriba para no pisar el footer */
+    right: 20px;
+    width: 70px;
+    cursor: pointer;
+    animation: spin 3s linear infinite;
+    z-index: 50;
+}
+
+#dog-counter {
+    position: fixed;
+    bottom: 110px; /* Flotando justo arriba del perro */
+    right: 35px;
+    font-weight: bold;
+    opacity: .8;
+    text-align: center;
+    z-index: 50;
+}
+
+@keyframes spin {
+    to {transform: rotate(360deg);}
 }
 </style>
 </head>
@@ -152,7 +264,10 @@ button.action{
 </nav>
 
 <div class="container" id="content"></div>
+
 <div id="dog-counter">🐶</div>
+
+<footer class="site-footer" id="site-footer"></footer>
 
 <button id="lang-btn" onclick="toggleLang()">ENGLISH</button>
 <img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
@@ -167,22 +282,24 @@ let dogCount=0;
 
 document.addEventListener("DOMContentLoaded",()=>{
     content=document.getElementById("content");
-    updateNavbar();
+    updateDynamicText();
     inicio();
 });
 
-function updateNavbar(){
+function updateDynamicText(){
     const b=document.querySelectorAll("#navbar button");
     if(lang==="es"){
         b[0].textContent="Inicio";
         b[1].textContent="Proyectos";
         b[2].textContent="Traducciones";
         b[3].textContent="Redes";
+        document.getElementById("site-footer").innerHTML="&copy; 2026 Mirage Team. Todos los derechos reservados.";
     }else{
         b[0].textContent="Home";
         b[1].textContent="Projects";
         b[2].textContent="Translations";
         b[3].textContent="Socials";
+        document.getElementById("site-footer").innerHTML="&copy; 2026 Mirage Team. All rights reserved.";
     }
 }
 
@@ -190,7 +307,7 @@ function toggleLang(){
     lang = lang==="es" ? "en":"es";
     document.getElementById("lang-btn").textContent =
         lang==="es" ? "ENGLISH":"ESPAÑOL";
-    updateNavbar();
+    updateDynamicText();
     inicio();
 }
 
@@ -206,17 +323,37 @@ function setContent(html,section){
 
 function inicio(){
     setContent(`
-        <h1>Mirage Team</h1>
-        <p>${lang === "es"
-        ? "Somos Mirage Team, un equipo de desarrollo indie enfocado en crear videojuegos con identidad propia y experiencias que realmente se disfruten. Detrás del proyecto estamos Valens429 y SejeroDev, dos desarrolladores unidos por la pasión por los juegos y las ganas de hacer las cosas bien. Actualmente estamos trabajando en varios proyectos, a los que les dedicamos mucha atención al detalle y cuidado en cada aspecto del desarrollo. Seguinos para enterarte de novedades y avances."
-        : "We are Mirage Team, an indie game development team focused on creating games with a strong identity and enjoyable experiences. Behind the project are Valens429 and SejeroDev, two developers driven by a passion for games and the desire to do things right. We are currently working on multiple projects, giving each one a high level of attention to detail and care throughout development. Follow us to stay updated on our progress and news."}
+        <h1 style="font-size: 2.2em; margin-bottom: 5px; margin-top: 0;">Mirage Team</h1>
+        <div class="hero-subtitle">
+            ${lang === "es" ? "🛠️ Desarrolladores Indie Principiantes 🛠️" : "🛠️ Beginner Indie Developers 🛠️"}
+        </div>
+
+        <p class="texto-destacado">
+        ${lang === "es"
+        ? "Creamos videojuegos con <strong>identidad propia</strong> y experiencias que realmente se disfruten. Cuidamos cada detalle para ofrecer juegos de calidad."
+        : "We create games with a <strong>strong identity</strong> and truly enjoyable experiences. We care about every detail to deliver high-quality games."}
         </p>
+
+        <div class="dev-cards">
+            <div class="dev-card" onclick="valens429()">
+                <h3>Valens429</h3>
+                <p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
+            </div>
+            <div class="dev-card" onclick="sejerodev()">
+                <h3>SejeroDev</h3>
+                <p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
+            </div>
+        </div>
+
+        <button class="action" onclick="proyectos()" style="font-size: 16px; padding: 12px 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+            🚀 ${lang === "es" ? "Ver nuestros proyectos" : "See our projects"}
+        </button>
     `,"inicio");
 }
 
 function proyectos(){
     setContent(`
-        <h1>${lang==="es" ? "Proyectos" : "Projects"}</h1>
+        <h1 style="margin-top:0;">${lang==="es" ? "Proyectos" : "Projects"}</h1>
 
         <img src="images/f1.png" class="thumbnail" onclick="proyecto(
             'Deltarune x Cult of the Lamb',
@@ -234,7 +371,7 @@ function proyectos(){
 
         <img src="images/f3.png" class="thumbnail" onclick="proyecto(
             'Papers Please España',
-            '${lang==="es"?"Una parodia de Papers Please creada a base de memes para la FakeVirus-JAM 3 del streamer Seii":"A parody of Papers Please created using memes for the FakeVirus-JAM 3 by streamer Seii"}',
+            '${lang==="es"?"Una parodia de Papers Please creada a base de memes.":"A parody of Papers Please created using memes."}',
             'https://gamejolt.com/games/PAPERSPLEASECESP/997156',
             'proyectos'
         )">
@@ -252,7 +389,7 @@ function proyectos(){
 
 function proyectosIndividuales(){
     setContent(`
-        <h1>${lang==="es"?"Proyectos Individuales":"Individual Projects"}</h1>
+        <h1 style="margin-top:0;">${lang==="es"?"Proyectos Individuales":"Individual Projects"}</h1>
         
         <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
             <button class="action" style="font-size:18px; padding:15px 30px;" onclick="valens429()">Valens429</button>
@@ -267,7 +404,7 @@ function proyectosIndividuales(){
 
 function valens429(){
     setContent(`
-        <h1>Valens429</h1>
+        <h1 style="margin-top:0;">Valens429</h1>
 
         <img src="images/f4.png" class="thumbnail" onclick="proyecto(
             'Session Zero',
@@ -278,7 +415,7 @@ function valens429(){
 
         <img src="images/py2.png" class="thumbnail" onclick="proyecto(
             'Seii´s Crackhouse',
-            '${lang==="es"?"Seii Crackhouse es una versión modificada de Raldis Crackhouse adaptada especialmente para el streamer Seii":"modified version of Raldis Crackhouse adapted especially for the streamer Seii"}',
+            '${lang==="es"?"Versión modificada de Raldis Crackhouse para Seii.":"Modified version of Raldis Crackhouse for Seii."}',
             'https://gamejolt.com/games/SEIICRACKHOUSE/973565',
             'valens429'
         )">
@@ -291,11 +428,11 @@ function valens429(){
 
 function sejerodev(){
     setContent(`
-        <h1>SejeroDEV</h1>
+        <h1 style="margin-top:0;">SejeroDEV</h1>
 
         <img src="images/sonic.png" class="thumbnail" onclick="proyecto(
             'Sonic Exodus',
-            '${lang==="es"?"Un nuevo y emocionante fangame de la saga del erizo azul.":"A new and exciting fangame from the blue blur series."}',
+            '${lang==="es"?"Un nuevo fangame de la saga del erizo azul.":"A new fangame from the blue blur series."}',
             'https://gamejolt.com/games/Sonic-Exodus/1031667',
             'sejerodev'
         )">
@@ -315,18 +452,18 @@ function sejerodev(){
 
 function herramientas(){
     setContent(`
-        <h1>${lang==="es"?"Herramientas":"Tools"}</h1>
+        <h1 style="margin-top:0;">${lang==="es"?"Herramientas":"Tools"}</h1>
 
         <img src="images/py1.png" class="thumbnail" onclick="proyecto(
             'DELTARUNE Save File Management',
-            '${lang==="es"?"Administra tus partidas de Deltarune de forma rápida, segura y personalizada":"Manage your Deltarune games quickly, securely, and with a personalized touch."}',
+            '${lang==="es"?"Administra tus partidas de forma rápida y segura.":"Manage your games quickly and securely."}',
             'https://gamejolt.com/games/DELTARUNESAVE/1006615',
             'herramientas'
         )">
 
         <img src="images/SMM.png" class="thumbnail" onclick="proyecto(
             'Soul Mod Manager',
-            '${lang==="es"?"Un excelente gestor de mods de Undertale para personalizar tu experiencia.":"An excellent mod manager for Undertale to customize your experience."}',
+            '${lang==="es"?"Un gestor de mods para personalizar tu experiencia.":"A mod manager to customize your experience."}',
             'https://gamejolt.com/games/SMM/978626',
             'herramientas'
         )">
@@ -337,10 +474,9 @@ function herramientas(){
     `,"herramientas");
 }
 
-// Nueva versión de la función proyecto que acepta de dónde vienes (backFunc)
 function proyecto(nombre,desc,link, backFunc){
     setContent(`
-        <h1>${nombre}</h1>
+        <h1 style="margin-top:0;">${nombre}</h1>
         <p>${desc}</p>
         <a href="${link}" target="_blank">
             <button class="action">${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button>
@@ -353,7 +489,7 @@ function proyecto(nombre,desc,link, backFunc){
 
 function udtsl(){
     setContent(`
-        <h1>Undertale: Souls Link</h1>
+        <h1 style="margin-top:0;">Undertale: Souls Link</h1>
 
         <p>
             ${lang==="es"
@@ -363,27 +499,16 @@ function udtsl(){
 
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
             <a href="udtsl/7_1 Español.png" download>
-                <button class="action" style="font-size:18px;padding:16px 26px;">
-                    📥 7_1
-                </button>
+                <button class="action" style="font-size:16px;padding:12px 20px;">📥 7_1</button>
             </a>
-
             <a href="udtsl/7_2 Español.png" download>
-                <button class="action" style="font-size:18px;padding:16px 26px;">
-                    📥 7_2
-                </button>
+                <button class="action" style="font-size:16px;padding:12px 20px;">📥 7_2</button>
             </a>
-
             <a href="udtsl/7_3 Español.png" download>
-                <button class="action" style="font-size:18px;padding:16px 26px;">
-                    📥 7_3
-                </button>
+                <button class="action" style="font-size:16px;padding:12px 20px;">📥 7_3</button>
             </a>
-
             <a href="udtsl/8_1 Español.png" download>
-                <button class="action" style="font-size:18px;padding:16px 26px;">
-                    📥 8_1
-                </button>
+                <button class="action" style="font-size:16px;padding:12px 20px;">📥 8_1</button>
             </a>
         </div>
 
@@ -397,7 +522,7 @@ function udtsl(){
 
 function purrfect2(){
     setContent(`
-        <h1>Purrfect Apawncalypse 2: Purrgatory Furever Parche Español</h1>
+        <h1 style="margin-top:0;">Purrfect Apawncalypse 2 Parche</h1>
 
         <p>
             ${lang==="es"
@@ -429,7 +554,7 @@ function purrfect2(){
 
 function traducciones(){
     setContent(`
-        <h1>${lang==="es" ? "Traducciones" : "Translations"}</h1>
+        <h1 style="margin-top:0;">${lang==="es" ? "Traducciones" : "Translations"}</h1>
         <img src="images/t1.png" class="thumbnail" onclick="udtsl()">
         <img src="images/Purrfect2.png" class="thumbnail" onclick="purrfect2()">
     `,"traducciones");
@@ -437,14 +562,63 @@ function traducciones(){
 
 function redes(){
     setContent(`
-        <h1>${lang==="es"?"Redes":"Socials"}</h1>
+        <h1 style="margin-top:0;">${lang==="es"?"Redes de Mirage Team":"Mirage Team Socials"}</h1>
         <div class="redes-grid">
             <a class="red" href="https://discord.gg/3faZHrnd4j" target="_blank">Discord</a>
             <a class="red" href="https://gamejolt.com/@MirageTeam" target="_blank">GameJolt</a>
             <a class="red" href="https://linktr.ee/MirageTeam1" target="_blank">Linktree</a>
             <a class="red" href="https://www.youtube.com/@MirageTeamGJ" target="_blank">YouTube</a>
         </div>
+
+        <div class="submenu" style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:20px;">
+            <button class="action" style="font-size:15px; padding:10px 20px;" onclick="redesValens()">
+                👤 ${lang==="es"?"Redes Valens429":"Valens429 Socials"}
+            </button>
+            <button class="action" style="font-size:15px; padding:10px 20px;" onclick="redesSejero()">
+                👤 ${lang==="es"?"Redes SejeroDEV":"SejeroDEV Socials"}
+            </button>
+        </div>
     `,"redes");
+}
+
+function redesValens(){
+    setContent(`
+        <img src="images/valens.png" class="profile-pic" alt="Valens429">
+        <h1 style="margin-top: 5px;">Valens429</h1>
+        <p style="color: #B3E5FC; margin-top: 0;">${lang==="es"?"Mis redes personales":"My personal links"}</p>
+        
+        <div class="redes-grid">
+            <a class="red" href="https://www.youtube.com/@Valens429VODs?sub_confirmation=1" target="_blank">YouTube</a>
+            <a class="red" href="https://www.twitch.tv/nyxr_ar" target="_blank">Twitch</a>
+            <a class="red" href="https://www.youtube.com/@CodigoDeterminacion?sub_confirmation=1" target="_blank">Canal UTDR</a>
+            <a class="red" href="https://gamejolt.com/@Valens429" target="_blank">GameJolt</a>
+            <a class="red" href="https://discord.com/invite/AY5BDRRpP6" target="_blank">Discord</a>
+            <a class="red" href="https://www.tiktok.com/@nyxrar" target="_blank">TikTok</a>
+        </div>
+
+        <div class="submenu">
+            <button class="action" onclick="redes()">← ${lang==="es"?"Volver":"Back"}</button>
+        </div>
+    `,"redesValens");
+}
+
+function redesSejero(){
+    setContent(`
+        <img src="images/sejero.png" class="profile-pic" alt="SejeroDEV">
+        <h1 style="margin-top: 5px;">SejeroDEV</h1>
+        <p style="color: #B3E5FC; margin-top: 0;">${lang==="es"?"Mis redes personales":"My personal links"}</p>
+        
+        <div class="redes-grid">
+            <a class="red" href="https://gamejolt.com/@SejeroDev" target="_blank">GameJolt</a>
+            <a class="red" href="https://www.youtube.com/@El-EseEse" target="_blank">Canal UTDR</a>
+            <a class="red" href="https://soundcloud.com/sejerodev" target="_blank">SoundCloud</a>
+            <a class="red" href="https://discord.gg/kP3HScENKd" target="_blank">Discord</a>
+        </div>
+
+        <div class="submenu">
+            <button class="action" onclick="redes()">← ${lang==="es"?"Volver":"Back"}</button>
+        </div>
+    `,"redesSejero");
 }
 
 function dog(){
@@ -460,4 +634,3 @@ function dog(){
 
 </body>
 </html>
-
