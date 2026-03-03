@@ -8,7 +8,6 @@
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
 <style>
-/* === PANTALLA DE CARGA RETRO === */
 #loader {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100vh;
@@ -27,7 +26,6 @@
 .blink { animation: blinker 1s linear infinite; }
 @keyframes blinker { 50% { opacity: 0; } }
 
-/* === FILTRO CRT (Monitor Viejo) === */
 .crt::before {
     content: " ";
     display: block;
@@ -39,7 +37,6 @@
     pointer-events: none;
 }
 
-/* === MODAL LIGHTBOX (ZOOM CAPTURAS) === */
 #lightbox {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.85); display: flex; justify-content: center;
@@ -50,7 +47,6 @@
 #lightbox-img { max-width: 90%; max-height: 90%; border-radius: 10px; border: 2px solid #00CFFF; box-shadow: 0 0 30px rgba(0,207,255,0.5); }
 .close-btn { position: absolute; top: 20px; right: 30px; color: #00CFFF; font-size: 40px; background: none; border: none; cursor: pointer; font-weight: bold; }
 
-/* === FONDO ANIMADO GRADIENTE === */
 body {
     margin: 0;
     height: 100vh;
@@ -82,7 +78,6 @@ body.hyper-mode {
     100% { filter: hue-rotate(360deg); }
 }
 
-/* === MODO "UN SOLO PLANO" === */
 .navbar {
     position: fixed;
     top: 15px;
@@ -128,7 +123,6 @@ body.hyper-mode {
 
 .hidden { opacity: 0; transform: translateY(-15px) scale(0.95); }
 
-/* === IMÁGENES DE PORTADAS GRANDES === */
 .thumbnail {
     max-width: 190px;
     margin: 10px; 
@@ -143,7 +137,6 @@ body.hyper-mode {
     box-shadow: 0 5px 15px rgba(0,207,255,0.5);
 }
 
-/* === ESTILOS GALERÍA CAPTURAS CENTRADAS === */
 .screenshot-gallery {
     display: flex; justify-content: center;
     gap: 10px; overflow-x: auto; padding: 10px;
@@ -238,7 +231,6 @@ button.action:hover {
 }
 #lang-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; }
 
-/* === BOTÓN MUTE === */
 #mute-btn {
     position: fixed; bottom: 40px; left: 125px; background: rgba(0,0,0,.5);
     border: 1px solid #00CFFF; color: #00CFFF; font-size: 18px; font-weight: bold;
@@ -299,7 +291,7 @@ button.action:hover {
 <img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
 
 <script>
-// === MOTOR DE MÚSICA DE FONDO Y MUTE ===
+
 const bgMusic = new Audio("audio/song.wav");
 bgMusic.loop = true;
 bgMusic.volume = 0.4;
@@ -354,7 +346,6 @@ function bindAudioToButtons() {
     });
 }
 
-// === FUNCIONES LIGHTBOX ===
 function openLightbox(src) {
     const lb = document.getElementById('lightbox');
     const img = document.getElementById('lightbox-img');
@@ -398,10 +389,9 @@ let dogCount=0;
 document.addEventListener("DOMContentLoaded",()=>{
     content=document.getElementById("content");
     updateDynamicText();
-    checkHash(); // <-- Llama al enrutador al cargar la página
+    checkHash();
 });
 
-// Evento para que funcionen las flechas de atrás/adelante del navegador
 window.addEventListener("hashchange", () => {
     checkHash();
 });
@@ -427,7 +417,7 @@ function toggleLang(){
     lang = lang==="es" ? "en":"es";
     document.getElementById("lang-btn").textContent = lang==="es" ? "ENGLISH":"ESPAÑOL";
     updateDynamicText();
-    checkHash(); // <-- Mantiene la sección actual abierta al traducir
+    checkHash(); 
 }
 
 function setContent(html, section, customHash){
@@ -435,7 +425,6 @@ function setContent(html, section, customHash){
     if(currentSection===finalHash && finalHash!=="inicio") return;
     currentSection=finalHash;
     
-    // Actualiza la URL para que se pueda copiar
     if(finalHash === 'inicio') history.pushState(null, null, window.location.pathname);
     else history.pushState(null, null, '#' + finalHash);
 
@@ -447,12 +436,10 @@ function setContent(html, section, customHash){
     },300);
 }
 
-// === ENRUTADOR MAESTRO ===
 function checkHash(forceHash) {
     let h = forceHash || window.location.hash.substring(1);
     if (!h || h === 'inicio') { inicio(); return; }
 
-    // Menús principales
     if (h === 'proyectos') proyectos();
     else if (h === 'proyectosIndividuales') proyectosIndividuales();
     else if (h === 'valens429') valens429();
@@ -463,14 +450,12 @@ function checkHash(forceHash) {
     else if (h === 'redes') redes();
     else if (h === 'udtsl') udtsl();
     else if (h === 'purrfect2') purrfect2();
-    else if (h === 'Miragepro') miragepro(); // <-- Llama a la función especial de Miragepro
+    else if (h === 'Miragepro') miragepro(); 
     
-    // Redes individuales
     else if (h === 'valens429_redes') redesValens();
     else if (h === 'sejerodev_redes') redesSejero();
     else if (h === 'zerex_redes') redesZerex();
 
-    // Enlaces directos a proyectos estándar
     else if (h === 'DXC') proyecto('Deltarune x Cult of the Lamb', lang==="es"?"Fangame crossover con combates y lore oscuro.":"Crossover fangame with battles and dark lore.", 'https://gamejolt.com/games/COTLXDR/975891', 'proyectos', 'DXC', 'DXC');
     else if (h === 'UB') proyecto('Undertale Bastille', lang==="es"?"Proyecto inspirado en Undertale con nuevas mecánicas.":"Undertale-inspired project with new mechanics.", 'https://gamejolt.com/games/Undertale-Bastille/987997', 'proyectos', 'UB', 'UB');
     else if (h === 'PPE') proyecto('Papers Please España', lang==="es"?"Una parodia de Papers Please creada a base de memes.":"A parody of Papers Please created using memes.", 'https://gamejolt.com/games/PAPERSPLEASECESP/997156', 'proyectos', 'PPE', 'PPE');
@@ -483,11 +468,9 @@ function checkHash(forceHash) {
     else if (h === 'DSFM') proyecto('DELTARUNE Save File Management', lang==="es"?"Administra tus partidas de forma rápida y segura.":"Manage your games quickly and securely.", 'https://gamejolt.com/games/DELTARUNESAVE/1006615', 'herramientas', 'DSFM', 'DSFM');
     else if (h === 'SMM') proyecto('Soul Mod Manager', lang==="es"?"Un gestor de mods para personalizar tu experiencia.":"A mod manager to customize your experience.", 'https://gamejolt.com/games/SMM/978626', 'herramientas', 'SMM', 'SMM');
     
-    else inicio(); // fallback
+    else inicio(); 
 }
-// ==========================================
 
-// === FUNCIONES DE RENDERIZADO ===
 function inicio(){
     setContent(`
         <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Mirage Team</h1>
@@ -579,7 +562,6 @@ function herramientas(){
     `,"herramientas");
 }
 
-// === FUNCIÓN DE PROYECTOS ESTÁNDAR ===
 function proyecto(nombre,desc,link, backHash, prefix, hashName){
     let galleryHTML = '';
     
@@ -600,7 +582,6 @@ function proyecto(nombre,desc,link, backHash, prefix, hashName){
     `,"proyecto", hashName);
 }
 
-// === FUNCIÓN ESPECIAL PARA MIRAGEPRO ===
 function miragepro(){
     let prefix = 'pro'; 
     let imgs = '';
@@ -626,9 +607,7 @@ function miragepro(){
         <div class="submenu"><button class="action" onclick="checkHash('herramientas')">← ${lang==="es"?"Volver":"Back"}</button></div>
     `, "Miragepro");
 }
-// ========================================
 
-// === FUNCIONES DE TRADUCCIÓN ===
 function udtsl(){
     let prefix = 'USL'; 
     let imgs = '';
@@ -761,3 +740,4 @@ function dog(){
 
 </body>
 </html>
+
