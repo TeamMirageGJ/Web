@@ -377,7 +377,7 @@ function renderPlaylist() {
             loadAndPlayTrack(index);
             sfxClick();
         };
-        li.onmouseenter = sfxHover; // Agregamos sonido al pasar el mouse por los temas
+        li.onmouseenter = sfxHover; 
         list.appendChild(li);
     });
 }
@@ -563,7 +563,7 @@ function checkHash(forceHash) {
 
 function inicio(){
     setContent(`
-        <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Mirage Team</h1>
+        <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Team Mirage</h1>
         <div class="hero-subtitle">
             ${lang === "es" ? "🛠️ Desarrolladores Indie Principiantes 🛠️" : "🛠️ Beginner Indie Developers 🛠️️"}
         </div>
@@ -829,3 +829,4 @@ function dog(){
 
 </body>
 </html>
+
