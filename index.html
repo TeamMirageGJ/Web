@@ -8,6 +8,7 @@
 <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
 <style>
+
 #loader {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100vh;
@@ -104,6 +105,40 @@ body.hyper-mode {
     background: rgba(0, 207, 255, 0.3);
     text-shadow: 0 0 10px #00CFFF;
 }
+
+#playlist-toggle-btn {
+    position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,.5);
+    border: 1px solid #00CFFF; color: #00CFFF; font-size: 20px;
+    padding: 8px 12px; border-radius: 10px; cursor: pointer; z-index: 101;
+    transition: 0.2s;
+}
+#playlist-toggle-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; transform: scale(1.1); }
+
+/* === SIDEBAR PLAYLIST === */
+#playlist-sidebar {
+    position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
+    background: rgba(10, 10, 25, 0.95); backdrop-filter: blur(15px);
+    border-right: 2px solid #00CFFF; box-shadow: 5px 0 20px rgba(0,207,255,0.3);
+    z-index: 2000; transition: left 0.4s ease; display: flex; flex-direction: column;
+}
+#playlist-sidebar.open { left: 0; }
+
+.playlist-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid rgba(0,207,255,0.3); }
+.playlist-header h3 { margin: 0; color: #00CFFF; text-transform: uppercase; letter-spacing: 2px; }
+.close-playlist { background: none; border: none; color: #00CFFF; font-size: 30px; cursor: pointer; line-height: 1; transition: 0.2s; }
+.close-playlist:hover { transform: scale(1.2); text-shadow: 0 0 10px #00CFFF; }
+
+#playlist-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
+#playlist-list::-webkit-scrollbar { width: 5px; }
+#playlist-list::-webkit-scrollbar-thumb { background-color: #00CFFF; }
+
+.playlist-item {
+    padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+    cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px;
+    color: #aaa; text-align: left; font-size: 14px;
+}
+.playlist-item:hover { background: rgba(0,207,255,0.15); color: white; padding-left: 25px; }
+.playlist-item.active { background: rgba(0,207,255,0.25); color: #00CFFF; font-weight: bold; border-left: 4px solid #00CFFF; }
 
 .container {
     max-width: 760px;
@@ -273,6 +308,17 @@ button.action:hover {
     <button class="close-btn">&times;</button>
 </div>
 
+<button id="playlist-toggle-btn" onclick="togglePlaylist()">📻</button>
+
+<div id="playlist-sidebar">
+    <div class="playlist-header">
+        <h3>📻 Mirage Playlist</h3>
+        <button onclick="togglePlaylist()" class="close-playlist">&times;</button>
+    </div>
+    <ul id="playlist-list">
+        </ul>
+</div>
+
 <nav class="navbar" id="navbar">
     <button onclick="checkHash('inicio')"></button>
     <button onclick="checkHash('proyectos')"></button>
@@ -292,11 +338,54 @@ button.action:hover {
 
 <script>
 
-const bgMusic = new Audio("audio/song.wav");
-bgMusic.loop = true;
+const playlist = [
+    { name: "Electro Shot", src: "audio/Web.wav" },
+    { name: "Cymbal", src: "audio/Web2.wav" },
+    { name: "Handpan", src: "audio/Web3.wav" },
+    { name: "Purrfect Theme", src: "audio/Web4.wav" }
+];
+
+let currentTrackIndex = 0;
+const bgMusic = new Audio(playlist[currentTrackIndex].src);
 bgMusic.volume = 0.4;
 let musicStarted = false;
 let isMuted = false;
+
+bgMusic.addEventListener('ended', () => {
+    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+    loadAndPlayTrack(currentTrackIndex);
+});
+
+function loadAndPlayTrack(index) {
+    currentTrackIndex = index;
+    bgMusic.src = playlist[currentTrackIndex].src;
+    musicStarted = true;
+    if (!isMuted) {
+        bgMusic.play().catch(e => console.log("Error de interacción: ", e));
+    }
+    renderPlaylist();
+}
+
+function renderPlaylist() {
+    const list = document.getElementById('playlist-list');
+    list.innerHTML = '';
+    playlist.forEach((track, index) => {
+        const li = document.createElement('li');
+        li.className = 'playlist-item' + (index === currentTrackIndex ? ' active' : '');
+        li.innerHTML = `<span>${index === currentTrackIndex ? '▶' : '🎵'}</span> ${track.name}`;
+        li.onclick = () => {
+            loadAndPlayTrack(index);
+            sfxClick();
+        };
+        li.onmouseenter = sfxHover; // Agregamos sonido al pasar el mouse por los temas
+        list.appendChild(li);
+    });
+}
+
+function togglePlaylist() {
+    document.getElementById('playlist-sidebar').classList.toggle('open');
+    sfxClick();
+}
 
 document.addEventListener("click", () => {
     if (!musicStarted && !isMuted) {
@@ -389,7 +478,8 @@ let dogCount=0;
 document.addEventListener("DOMContentLoaded",()=>{
     content=document.getElementById("content");
     updateDynamicText();
-    checkHash();
+    renderPlaylist();
+    checkHash(); 
 });
 
 window.addEventListener("hashchange", () => {
@@ -403,13 +493,13 @@ function updateDynamicText(){
         b[1].textContent="Proyectos";
         b[2].textContent="Traducciones";
         b[3].textContent="Redes";
-        document.getElementById("site-footer").innerHTML=">_ TEAM MIRAGE OS // V.2026 // ALL RIGHTS RESERVED.";
+        document.getElementById("site-footer").innerHTML=">_ MIRAGE TEAM OS // V.2026 // ALL RIGHTS RESERVED.";
     }else{
         b[0].textContent="Home";
         b[1].textContent="Projects";
         b[2].textContent="Translations";
         b[3].textContent="Socials";
-        document.getElementById("site-footer").innerHTML=">_ TEAM MIRAGE OS // V.2026 // ALL RIGHTS RESERVED.";
+        document.getElementById("site-footer").innerHTML=">_ MIRAGE TEAM OS // V.2026 // ALL RIGHTS RESERVED.";
     }
 }
 
@@ -459,8 +549,8 @@ function checkHash(forceHash) {
     else if (h === 'DXC') proyecto('Deltarune x Cult of the Lamb', lang==="es"?"Fangame crossover con combates y lore oscuro.":"Crossover fangame with battles and dark lore.", 'https://gamejolt.com/games/COTLXDR/975891', 'proyectos', 'DXC', 'DXC');
     else if (h === 'UB') proyecto('Undertale Bastille', lang==="es"?"Proyecto inspirado en Undertale con nuevas mecánicas.":"Undertale-inspired project with new mechanics.", 'https://gamejolt.com/games/Undertale-Bastille/987997', 'proyectos', 'UB', 'UB');
     else if (h === 'PPE') proyecto('Papers Please España', lang==="es"?"Una parodia de Papers Please creada a base de memes.":"A parody of Papers Please created using memes.", 'https://gamejolt.com/games/PAPERSPLEASECESP/997156', 'proyectos', 'PPE', 'PPE');
-    else if (h === 'SZ') proyecto('Session Zero', lang==="es"?"Session Zero es una experiencia de terror interactivo donde nada es lo que parece ¿Podras sobrevivir a la entrevistar?":"Session Zero is an interactive horror experience where nothing is what it seems. Will you be able to survive the interview?", 'https://gamejolt.com/games/SessionZero/1031786', 'valens429', 'SZ', 'SZ');
-    else if (h === 'SC') proyecto('Seii´s Crackhouse', lang==="es"?"Versión modificada de Raldis Crackhouse para el streamer Seii__.":"Modified version of Raldis Crackhouse for the streamer Seii__.", 'https://gamejolt.com/games/SEIICRACKHOUSE/973565', 'valens429', 'SC', 'SC');
+    else if (h === 'SZ') proyecto('Session Zero', lang==="es"?"¿Listo?":"Ready?", 'https://gamejolt.com/games/SessionZero/1031786', 'valens429', 'SZ', 'SZ');
+    else if (h === 'SC') proyecto('Seii´s Crackhouse', lang==="es"?"Versión modificada de Raldis Crackhouse para Seii.":"Modified version of Raldis Crackhouse for Seii.", 'https://gamejolt.com/games/SEIICRACKHOUSE/973565', 'valens429', 'SC', 'SC');
     else if (h === 'SE') proyecto('Sonic Exodus', lang==="es"?"Un nuevo fangame de la saga del erizo azul.":"A new fangame from the blue blur series.", 'https://gamejolt.com/games/Sonic-Exodus/1031667', 'sejerodev', 'SE', 'SE');
     else if (h === 'CTC') proyecto('Cony the Confronter', lang==="es"?"Una aventura única llena de desafíos.":"A unique adventure full of challenges.", 'https://gamejolt.com/games/Cony-the-Confronter/973146', 'sejerodev', 'CTC', 'CTC');
     else if (h === 'ZA') proyecto('Zerex Adventure', lang==="es"?"¿Podrás enviar a Zerex de vuelta a casa? ¿O morirás en el intento...?":"Will you be able to send Zerex back home? Or will you die trying...?", 'https://gamejolt.com/games/ZA/1035816', 'zerex', 'ZA', 'ZA');
@@ -473,7 +563,7 @@ function checkHash(forceHash) {
 
 function inicio(){
     setContent(`
-        <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Team Mirage</h1>
+        <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Mirage Team</h1>
         <div class="hero-subtitle">
             ${lang === "es" ? "🛠️ Desarrolladores Indie Principiantes 🛠️" : "🛠️ Beginner Indie Developers 🛠️️"}
         </div>
@@ -528,7 +618,7 @@ function valens429(){
     setContent(`
         <h1 style="margin-top:0;">Valens429</h1>
         <img src="images/f4.png" class="thumbnail" onclick="checkHash('SZ')">
-        <img src="images/py2.png" class="thumbnail" onclick="checkHash('SC')">
+        <img src="images/py2.PNG" class="thumbnail" onclick="checkHash('SC')">
         <div class="submenu"><button class="action" onclick="checkHash('proyectosIndividuales')">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"valens429");
 }
@@ -564,7 +654,6 @@ function herramientas(){
 
 function proyecto(nombre,desc,link, backHash, prefix, hashName){
     let galleryHTML = '';
-    
     if(prefix) {
         let imgs = '';
         for(let i=1; i<=5; i++) {
@@ -598,10 +687,10 @@ function miragepro(){
         
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
             <a href="#" target="_blank"><button class="action">🎮 ${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
-            <a href="#" download><button class="action">📥 ${lang==="es"?"Descargar versión de prueba":"Download trial version"}</button></a>
-            <a href="https://ko-fi.com/s/a871eaf7ac" target="_blank"><button class="action">🛒 ${lang==="es"?"Comprar":"Buy"}</button></a>
+            <a href="#" download><button class="action">📥 ${lang==="es"?"Descargar versión gratuita":"Download free version"}</button></a>
+            <a href="#" target="_blank"><button class="action">🛒 ${lang==="es"?"Comprar":"Buy"}</button></a>
             <a href="#" target="_blank"><button class="action">📺 ${lang==="es"?"Ver tráiler":"View trailer"}</button></a>
-            <a href="https://www.tiktok.com/@team_mirage_gj" target="_blank"><button class="action">📱 TikTok</button></a>
+            <a href="#" target="_blank"><button class="action">📱 TikTok</button></a>
         </div>
         
         <div class="submenu"><button class="action" onclick="checkHash('herramientas')">← ${lang==="es"?"Volver":"Back"}</button></div>
@@ -690,7 +779,6 @@ function redesValens(){
             <a class="red" href="https://gamejolt.com/@Valens429" target="_blank">GameJolt</a>
             <a class="red" href="https://discord.com/invite/AY5BDRRpP6" target="_blank">Discord</a>
             <a class="red" href="https://www.tiktok.com/@nyxrar" target="_blank">TikTok</a>
-			<a class="red" href="https://ko-fi.com/valens429" target="_blank">Tips</a>
         </div>
         <div class="submenu"><button class="action" onclick="checkHash('redes')">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"valens429_redes");
@@ -741,7 +829,3 @@ function dog(){
 
 </body>
 </html>
-
-
-
-
