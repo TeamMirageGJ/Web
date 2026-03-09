@@ -407,7 +407,6 @@ function toggleMute() {
     sfxClick();
 }
 
-// CORRECCIÓN 1: Inicialización segura del Audio Context en demanda
 let audioCtx;
 function initAudioCtx() {
     if (!audioCtx) {
@@ -453,10 +452,8 @@ function closeLightbox() {
     document.getElementById('lightbox').classList.remove('active');
 }
 
-// CORRECCIÓN 2: Uso de DOMContentLoaded en lugar de event 'load' absoluto para evitar atascos visuales
 document.addEventListener("DOMContentLoaded", () => {
     
-    // Animación de entrada inicializada directamente al crear el DOM
     setTimeout(() => {
         document.getElementById('load-text').innerHTML = "> ACCESS GRANTED<span class='blink'>_</span>";
         setTimeout(() => {
@@ -523,7 +520,6 @@ function setContent(html, section, customHash){
     if(currentSection===finalHash && finalHash!=="inicio") return;
     currentSection=finalHash;
     
-    // CORRECCIÓN 3: Try/Catch envolviendo history.pushState para evitar colapsos locales
     try {
         if(finalHash === 'inicio') history.pushState(null, null, window.location.pathname);
         else history.pushState(null, null, '#' + finalHash);
@@ -631,7 +627,7 @@ function valens429(){
     setContent(`
         <h1 style="margin-top:0;">Valens429</h1>
         <img src="images/f4.png" class="thumbnail" onclick="checkHash('SZ')">
-        <img src="images/py2.PNG" class="thumbnail" onclick="checkHash('SC')">
+        <img src="images/py2.png" class="thumbnail" onclick="checkHash('SC')">
         <div class="submenu"><button class="action" onclick="checkHash('proyectosIndividuales')">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"valens429");
 }
@@ -842,3 +838,4 @@ function dog(){
 
 </body>
 </html>
+
