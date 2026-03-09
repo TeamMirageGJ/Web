@@ -407,11 +407,18 @@ function toggleMute() {
     sfxClick();
 }
 
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const audioCtx = new AudioContext();
+// CORRECCIÓN 1: Inicialización segura del Audio Context en demanda
+let audioCtx;
+function initAudioCtx() {
+    if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+}
 
 function playTone(freq, type, duration, vol) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
+    initAudioCtx(); // Se llamará solo tras la interacción de usuario
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
@@ -446,7 +453,10 @@ function closeLightbox() {
     document.getElementById('lightbox').classList.remove('active');
 }
 
-window.addEventListener('load', () => {
+// CORRECCIÓN 2: Uso de DOMContentLoaded en lugar de event 'load' absoluto para evitar atascos visuales
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // Animación de entrada inicializada directamente al crear el DOM
     setTimeout(() => {
         document.getElementById('load-text').innerHTML = "> ACCESS GRANTED<span class='blink'>_</span>";
         setTimeout(() => {
@@ -454,6 +464,11 @@ window.addEventListener('load', () => {
             setTimeout(() => document.getElementById('loader').style.visibility = 'hidden', 800);
         }, 500);
     }, 1000);
+
+    content=document.getElementById("content");
+    updateDynamicText();
+    renderPlaylist();
+    checkHash(); 
 });
 
 const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
@@ -474,13 +489,6 @@ let currentSection="";
 let lang="es";
 let dogCooldown=false;
 let dogCount=0;
-
-document.addEventListener("DOMContentLoaded",()=>{
-    content=document.getElementById("content");
-    updateDynamicText();
-    renderPlaylist();
-    checkHash(); 
-});
 
 window.addEventListener("hashchange", () => {
     checkHash();
@@ -515,8 +523,13 @@ function setContent(html, section, customHash){
     if(currentSection===finalHash && finalHash!=="inicio") return;
     currentSection=finalHash;
     
-    if(finalHash === 'inicio') history.pushState(null, null, window.location.pathname);
-    else history.pushState(null, null, '#' + finalHash);
+    // CORRECCIÓN 3: Try/Catch envolviendo history.pushState para evitar colapsos locales
+    try {
+        if(finalHash === 'inicio') history.pushState(null, null, window.location.pathname);
+        else history.pushState(null, null, '#' + finalHash);
+    } catch(e) {
+        console.warn("API de History desactivada en modo local (file://).");
+    }
 
     content.classList.add("hidden");
     setTimeout(()=>{
@@ -683,7 +696,7 @@ function miragepro(){
     setContent(`
         ${galleryHTML}
         <h1 style="margin-top:0;">Miragepro</h1>
-        <p>${lang==="es"?"Placeholder"}</p>
+        <p>${lang==="es"?"Placeholder":"Placeholder"}</p>
         
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
             <a href="#" target="_blank"><button class="action">🎮 ${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
@@ -736,7 +749,7 @@ function purrfect2(){
         <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
             <a href="https://gamejolt.com/games/PurrfectApawncalypse2ESP/1053196" target="_blank"><button class="action">🎮 ${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
             <a href="Downloads/Purrfect Apawcalypse Purrgatory Furever! Parche Español.zip" download><button class="action">📥 ${lang==="es"?"Descargar Parche":"Download Patch"}</button></a>
-			<a href="https://youtu.be/qrNUZrtPQfs" target="_blank"><button class="action">📺 ${lang==="es"?"Ver tráiler":"View trailer"}</button></a>
+            <a href="https://youtu.be/qrNUZrtPQfs" target="_blank"><button class="action">📺 ${lang==="es"?"Ver tráiler":"View trailer"}</button></a>
         </div>
         <div class="submenu"><button class="action" onclick="checkHash('traducciones')">← ${lang==="es"?"Volver":"Back"}</button></div>
     `,"purrfect2");
@@ -829,5 +842,3 @@ function dog(){
 
 </body>
 </html>
-
-
