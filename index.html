@@ -1,846 +1,1636 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Mirage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Team Mirage</title>
 
-<link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
 
-<style>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(-45deg, #00AEEF, #004b87, #0b1021, #007ACC);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            cursor: crosshair;
+        }
 
-#loader {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100vh;
-    background: #050510;
-    color: #00CFFF;
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 1.5rem;
-    font-weight: bold;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
-}
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
-.blink { animation: blinker 1s linear infinite; }
-@keyframes blinker { 50% { opacity: 0; } }
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
 
-.crt::before {
-    content: " ";
-    display: block;
-    position: absolute;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-    background-size: 100% 3px;
-    z-index: 999;
-    pointer-events: none;
-}
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
 
-#lightbox {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.85); display: flex; justify-content: center;
-    align-items: center; z-index: 2000; opacity: 0; visibility: hidden;
-    transition: opacity 0.3s; backdrop-filter: blur(5px);
-}
-#lightbox.active { opacity: 1; visibility: visible; }
-#lightbox-img { max-width: 90%; max-height: 90%; border-radius: 10px; border: 2px solid #00CFFF; box-shadow: 0 0 30px rgba(0,207,255,0.5); }
-.close-btn { position: absolute; top: 20px; right: 30px; color: #00CFFF; font-size: 40px; background: none; border: none; cursor: pointer; font-weight: bold; }
+        @keyframes hyperRainbow {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
 
-body {
-    margin: 0;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background: linear-gradient(-45deg, #00AEEF, #004b87, #0b1021, #007ACC);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    cursor: crosshair; 
-}
+        body.hyper-mode {
+            animation: hyperRainbow 0.5s infinite;
+        }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
+        .blink {
+            animation: blinker 1s linear infinite;
+        }
 
-body.hyper-mode {
-    animation: hyperRainbow 0.5s infinite;
-}
-@keyframes hyperRainbow {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(360deg); }
-}
+        .crt::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 3px;
+            z-index: 999;
+            pointer-events: none;
+        }
 
-.navbar {
-    position: fixed;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 15px;
-    background: rgba(255,255,255,.1);
-    backdrop-filter: blur(10px);
-    padding: 10px 15px;
-    border-radius: 12px;
-    z-index: 100;
-    border: 1px solid rgba(255,255,255,0.2);
-}
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #050510;
+            color: #00CFFF;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
 
-.navbar button {
-    background: none; border: none; color: white;
-    font-weight: bold; cursor: pointer;
-    padding: 6px 12px; border-radius: 6px;
-    transition: 0.2s;
-}
+        .navbar {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 15px;
+            border-radius: 12px;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-.navbar button:hover {
-    background: rgba(0, 207, 255, 0.3);
-    text-shadow: 0 0 10px #00CFFF;
-}
+        .navbar button {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
 
-#playlist-toggle-btn {
-    position: fixed; top: 15px; left: 15px; background: rgba(0,0,0,.5);
-    border: 1px solid #00CFFF; color: #00CFFF; font-size: 20px;
-    padding: 8px 12px; border-radius: 10px; cursor: pointer; z-index: 101;
-    transition: 0.2s;
-}
-#playlist-toggle-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; transform: scale(1.1); }
+        .navbar button:hover {
+            background: rgba(0, 207, 255, 0.3);
+            text-shadow: 0 0 10px #00CFFF;
+        }
 
-/* === SIDEBAR PLAYLIST === */
-#playlist-sidebar {
-    position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
-    background: rgba(10, 10, 25, 0.95); backdrop-filter: blur(15px);
-    border-right: 2px solid #00CFFF; box-shadow: 5px 0 20px rgba(0,207,255,0.3);
-    z-index: 2000; transition: left 0.4s ease; display: flex; flex-direction: column;
-}
-#playlist-sidebar.open { left: 0; }
+        .container {
+            max-width: 760px;
+            width: 90%;
+            max-height: 65vh;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 207, 255, 0.3);
+            padding: 20px 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 207, 255, 0.1);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-.playlist-header { display: flex; justify-content: space-between; align-items: center; padding: 20px; border-bottom: 1px solid rgba(0,207,255,0.3); }
-.playlist-header h3 { margin: 0; color: #00CFFF; text-transform: uppercase; letter-spacing: 2px; }
-.close-playlist { background: none; border: none; color: #00CFFF; font-size: 30px; cursor: pointer; line-height: 1; transition: 0.2s; }
-.close-playlist:hover { transform: scale(1.2); text-shadow: 0 0 10px #00CFFF; }
+        .container::-webkit-scrollbar {
+            display: none;
+        }
 
-#playlist-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
-#playlist-list::-webkit-scrollbar { width: 5px; }
-#playlist-list::-webkit-scrollbar-thumb { background-color: #00CFFF; }
+        .hidden {
+            opacity: 0;
+            transform: translateY(-15px) scale(0.95);
+        }
 
-.playlist-item {
-    padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
-    cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 10px;
-    color: #aaa; text-align: left; font-size: 14px;
-}
-.playlist-item:hover { background: rgba(0,207,255,0.15); color: white; padding-left: 25px; }
-.playlist-item.active { background: rgba(0,207,255,0.25); color: #00CFFF; font-weight: bold; border-left: 4px solid #00CFFF; }
+        button.action {
+            background: linear-gradient(45deg, #00CFFF, #007ACC);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
 
-.container {
-    max-width: 760px;
-    width: 90%;
-    max-height: 65vh;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(0, 207, 255, 0.3);
-    padding: 20px 25px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 207, 255, 0.1);
-    transition: opacity .4s ease, transform .4s ease;
-    overflow-y: auto; 
-    -ms-overflow-style: none; scrollbar-width: none;
-}
-.container::-webkit-scrollbar { display: none; }
+        button.action:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00CFFF;
+        }
 
-.hidden { opacity: 0; transform: translateY(-15px) scale(0.95); }
+        .thumbnail {
+            max-width: 190px;
+            margin: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+        }
 
-.thumbnail {
-    max-width: 190px;
-    margin: 10px; 
-    border-radius: 10px;
-    cursor: pointer; 
-    transition: .3s;
-    border: 2px solid transparent;
-}
-.thumbnail:hover {
-    transform: scale(1.1) translateY(-5px);
-    border-color: #00CFFF;
-    box-shadow: 0 5px 15px rgba(0,207,255,0.5);
-}
+        .thumbnail:hover {
+            transform: scale(1.1) translateY(-5px);
+            border-color: #00CFFF;
+            box-shadow: 0 5px 15px rgba(0, 207, 255, 0.5);
+        }
 
-.screenshot-gallery {
-    display: flex; justify-content: center;
-    gap: 10px; overflow-x: auto; padding: 10px;
-    background: rgba(0,0,0,0.3); border-radius: 10px; margin-bottom: 20px;
-    scrollbar-width: thin; scrollbar-color: #00CFFF transparent;
-}
-.screenshot-gallery::-webkit-scrollbar { height: 6px; }
-.screenshot-gallery::-webkit-scrollbar-thumb { background-color: #00CFFF; border-radius: 3px; }
-.screenshot { height: 80px; width: auto; object-fit: cover; border-radius: 5px; cursor: pointer; transition: 0.2s; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
-.screenshot:hover { transform: scale(1.05); border-color: #00CFFF; box-shadow: 0 0 10px rgba(0,207,255,0.3); }
+        .screenshot-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: #00CFFF transparent;
+        }
 
-button.action {
-    background: linear-gradient(45deg,#00CFFF,#007ACC);
-    border: none; color: white; padding: 10px 18px;
-    border-radius: 8px; cursor: pointer; margin: 5px;
-    font-weight: bold; transition: 0.2s;
-}
-button.action:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px #00CFFF;
-}
+        .screenshot-gallery::-webkit-scrollbar {
+            height: 6px;
+        }
 
-.submenu {
-    margin-top: 15px; padding-top: 15px;
-    border-top: 1px solid rgba(255,255,255,.2);
-}
+        .screenshot-gallery::-webkit-scrollbar-thumb {
+            background-color: #00CFFF;
+            border-radius: 3px;
+        }
 
-.redes-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
-    gap: 12px; margin-top: 16px;
-}
+        .screenshot {
+            height: 80px;
+            width: auto;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
 
-.red {
-    padding: 10px; border-radius: 10px;
-    background: rgba(255,255,255,.1);
-    font-weight: bold; transition: .2s;
-    text-decoration: none; color: white; font-size: 14px;
-    border: 1px solid transparent;
-}
-.red:hover {
-    transform: translateY(-3px);
-    background: rgba(0, 207, 255, 0.2);
-    border-color: #00CFFF;
-    box-shadow: 0 0 10px rgba(0,207,255,0.4);
-}
+        .screenshot:hover {
+            transform: scale(1.05);
+            border-color: #00CFFF;
+            box-shadow: 0 0 10px rgba(0, 207, 255, 0.3);
+        }
 
-.hero-subtitle {
-    color: #00CFFF; font-weight: bold; text-transform: uppercase;
-    letter-spacing: 3px; font-size: 13px; margin-bottom: 15px;
-    background: rgba(0,0,0,0.5); display: inline-block;
-    padding: 5px 15px; border-radius: 20px;
-    border: 1px solid #00CFFF;
-}
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
 
-.texto-destacado { font-size: 16px; line-height: 1.5; margin-bottom: 15px; }
+        #lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
 
-.dev-cards { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
-.dev-card {
-    background: rgba(0, 0, 0, 0.4); padding: 12px 20px;
-    border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
-    transition: 0.3s; cursor: pointer;
-    flex: 1 1 120px;
-    max-width: 180px;
-}
-.dev-card:hover {
-    transform: translateY(-5px); background: rgba(0, 207, 255, 0.2);
-    border-color: #00CFFF; box-shadow: 0 5px 15px rgba(0, 207, 255, 0.3);
-}
-.dev-card h3 { margin: 0 0 5px 0; font-size: 18px; color: #fff; }
-.dev-card p { margin: 0; font-size: 11px; color: #00CFFF; text-transform: uppercase; font-weight: bold; }
+        #lightbox-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+            border: 2px solid #00CFFF;
+            box-shadow: 0 0 30px rgba(0, 207, 255, 0.5);
+        }
 
-.profile-pic {
-    width: 120px; height: 120px; 
-    border-radius: 50%;
-    object-fit: cover; border: 4px solid rgba(255,255,255,0.3);
-    box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
-    margin-bottom: 10px; transition: 0.3s;
-}
-.profile-pic:hover { transform: scale(1.05) rotate(5deg); border-color: #00CFFF; }
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #00CFFF;
+            font-size: 40px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-.site-footer {
-    position: fixed; bottom: 0; left: 0; width: 100%; padding: 8px;
-    font-size: 12px; background: rgba(0,0,0,0.5); z-index: 10;
-    font-family: 'Courier New', Courier, monospace; letter-spacing: 1px;
-}
-#lang-btn {
-    position: fixed; bottom: 40px; left: 20px; background: rgba(0,0,0,.5);
-    border: 1px solid #00CFFF; color: #00CFFF; font-weight: bold;
-    padding: 10px 16px; border-radius: 10px; cursor: pointer; z-index: 50;
-    transition: 0.2s;
-}
-#lang-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; }
+        #playlist-toggle-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00CFFF;
+            color: #00CFFF;
+            font-size: 20px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 101;
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
 
-#mute-btn {
-    position: fixed; bottom: 40px; left: 125px; background: rgba(0,0,0,.5);
-    border: 1px solid #00CFFF; color: #00CFFF; font-size: 18px; font-weight: bold;
-    padding: 8px 14px; border-radius: 10px; cursor: pointer; z-index: 50;
-    transition: 0.2s;
-}
-#mute-btn:hover { background: #00CFFF; color: black; box-shadow: 0 0 15px #00CFFF; }
+        #playlist-toggle-btn:hover {
+            background: #00CFFF;
+            color: black;
+            box-shadow: 0 0 15px #00CFFF;
+            transform: scale(1.1);
+        }
 
-.dog-button {
-    position: fixed; bottom: 40px; right: 20px; width: 70px;
-    cursor: pointer; animation: spin 4s linear infinite; z-index: 50;
-    transition: 0.2s;
-}
-.dog-button:hover { filter: drop-shadow(0 0 10px #00CFFF) brightness(1.2); }
+        #playlist-sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(10, 10, 25, 0.95);
+            backdrop-filter: blur(15px);
+            border-right: 2px solid #00CFFF;
+            box-shadow: 5px 0 20px rgba(0, 207, 255, 0.3);
+            z-index: 2000;
+            transition: left 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
 
-#dog-counter {
-    position: fixed; 
-    bottom: 115px; 
-    right: 20px; 
-    width: 70px; 
-    font-weight: bold;
-    opacity: .9; 
-    text-align: center; 
-    z-index: 50; 
-    text-shadow: 0 0 5px black;
-    pointer-events: none;
-}
-@keyframes spin { to {transform: rotate(360deg);} }
-</style>
+        #playlist-sidebar.open {
+            left: 0;
+        }
+
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 207, 255, 0.3);
+        }
+
+        .playlist-header h3 {
+            margin: 0;
+            color: #00CFFF;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .close-playlist {
+            background: none;
+            border: none;
+            color: #00CFFF;
+            font-size: 30px;
+            cursor: pointer;
+            line-height: 1;
+            transition: transform 0.2s ease, text-shadow 0.2s ease;
+        }
+
+        .close-playlist:hover {
+            transform: scale(1.2);
+            text-shadow: 0 0 10px #00CFFF;
+        }
+
+        #playlist-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        #playlist-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #playlist-list::-webkit-scrollbar-thumb {
+            background-color: #00CFFF;
+        }
+
+        .playlist-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaa;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .playlist-item:hover {
+            background: rgba(0, 207, 255, 0.15);
+            color: white;
+            padding-left: 25px;
+        }
+
+        .playlist-item.active {
+            background: rgba(0, 207, 255, 0.25);
+            color: #00CFFF;
+            font-weight: bold;
+            border-left: 4px solid #00CFFF;
+        }
+
+        .dev-cards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .dev-card {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+            flex: 1 1 120px;
+            max-width: 180px;
+        }
+
+        .dev-card:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 207, 255, 0.2);
+            border-color: #00CFFF;
+            box-shadow: 0 5px 15px rgba(0, 207, 255, 0.3);
+        }
+
+        .dev-card h3 {
+            margin: 0 0 5px 0;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .dev-card p {
+            margin: 0;
+            font-size: 11px;
+            color: #00CFFF;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 207, 255, 0.5);
+            margin-bottom: 10px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(5deg);
+            border-color: #00CFFF;
+        }
+
+        .hero-subtitle {
+            color: #00CFFF;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid #00CFFF;
+        }
+
+        .texto-destacado {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .submenu {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .titulo-proyecto {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .titulo-proyecto h1 {
+            margin: 0;
+        }
+
+        .seii-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid #00CFFF;
+            cursor: help;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .seii-icon:hover {
+            transform: scale(1.2) rotate(5deg);
+            box-shadow: 0 0 15px rgba(0, 207, 255, 0.8);
+        }
+
+        .redes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .red {
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 14px;
+            border: 1px solid transparent;
+        }
+
+        .red:hover {
+            transform: translateY(-3px);
+            background: rgba(0, 207, 255, 0.2);
+            border-color: #00CFFF;
+            box-shadow: 0 0 10px rgba(0, 207, 255, 0.4);
+        }
+
+        .site-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 1px;
+        }
+
+        #lang-btn {
+            position: fixed;
+            bottom: 40px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00CFFF;
+            color: #00CFFF;
+            font-weight: bold;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 50;
+            transition: all 0.2s ease;
+        }
+
+        #lang-btn:hover {
+            background: #00CFFF;
+            color: black;
+            box-shadow: 0 0 15px #00CFFF;
+        }
+
+        #mute-btn {
+            position: fixed;
+            bottom: 40px;
+            left: 125px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #00CFFF;
+            color: #00CFFF;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 50;
+            transition: all 0.2s ease;
+        }
+
+        #mute-btn:hover {
+            background: #00CFFF;
+            color: black;
+            box-shadow: 0 0 15px #00CFFF;
+        }
+
+        .dog-button {
+            position: fixed;
+            bottom: 40px;
+            right: 20px;
+            width: 70px;
+            cursor: pointer;
+            animation: spin 4s linear infinite;
+            z-index: 50;
+            transition: filter 0.2s ease;
+        }
+
+        .dog-button:hover {
+            filter: drop-shadow(0 0 10px #00CFFF) brightness(1.2);
+        }
+
+        #dog-counter {
+            position: fixed;
+            bottom: 115px;
+            right: 20px;
+            width: 70px;
+            font-weight: bold;
+            opacity: 0.9;
+            text-align: center;
+            z-index: 50;
+            text-shadow: 0 0 5px black;
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body class="crt"> 
 
-<div id="loader">
-    <span id="load-text">> SYSTEM BOOTING<span class="blink">_</span></span>
-</div>
-
-<div id="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" alt="Zoom">
-    <button class="close-btn">&times;</button>
-</div>
-
-<button id="playlist-toggle-btn" onclick="togglePlaylist()">📻</button>
-
-<div id="playlist-sidebar">
-    <div class="playlist-header">
-        <h3>📻 Mirage Playlist</h3>
-        <button onclick="togglePlaylist()" class="close-playlist">&times;</button>
+    <div id="loader">
+        <span id="load-text">> SYSTEM BOOTING<span class="blink">_</span></span>
     </div>
-    <ul id="playlist-list">
+
+    <div id="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Zoom">
+        <button class="close-btn">&times;</button>
+    </div>
+
+    <button id="playlist-toggle-btn" onclick="togglePlaylist()">📻</button>
+
+    <div id="playlist-sidebar">
+        <div class="playlist-header">
+            <h3>📻 Mirage Playlist</h3>
+            <button onclick="togglePlaylist()" class="close-playlist">&times;</button>
+        </div>
+        <ul id="playlist-list">
         </ul>
-</div>
+    </div>
 
-<nav class="navbar" id="navbar">
-    <button onclick="checkHash('inicio')"></button>
-    <button onclick="checkHash('proyectos')"></button>
-    <button onclick="checkHash('traducciones')"></button>
-    <button onclick="checkHash('redes')"></button>
-</nav>
+    <nav class="navbar" id="navbar">
+        <button onclick="checkHash('inicio')"></button>
+        <button onclick="checkHash('proyectos')"></button>
+        <button onclick="checkHash('traducciones')"></button>
+        <button onclick="checkHash('redes')"></button>
+    </nav>
 
-<div class="container" id="content"></div>
+    <div class="container" id="content"></div>
 
-<div id="dog-counter">🐶</div>
+    <div id="dog-counter">🐶</div>
 
-<footer class="site-footer" id="site-footer"></footer>
+    <footer class="site-footer" id="site-footer"></footer>
 
-<button id="lang-btn" onclick="toggleLang()">ENGLISH</button>
-<button id="mute-btn" onclick="toggleMute()">🔈</button>
-<img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
+    <button id="lang-btn" onclick="toggleLang()">ENGLISH</button>
+    <button id="mute-btn" onclick="toggleMute()">🔈</button>
+    <img src="images/toby.png" class="dog-button" onclick="dog()" alt="perro">
 
 <script>
+    let content;
+    let currentSection = "";
+    let lang = "es";
+    let dogCooldown = false;
+    let dogCount = 0;
+    let audioCtx;
 
-const playlist = [
-    { name: "Electro Shot", src: "audio/Web.wav" },
-    { name: "Cymbal", src: "audio/Web2.wav" },
-    { name: "Handpan", src: "audio/Web3.wav" },
-    { name: "Purrfect Theme", src: "audio/Web4.wav" }
-];
+    const playlist = [
+        { name: "Electro Shot", src: "audio/Web.wav" },
+        { name: "Cymbal", src: "audio/Web2.wav" },
+        { name: "Handpan", src: "audio/Web3.wav" },
+        { name: "Purrfect Theme", src: "audio/Web4.wav" }
+    ];
 
-let currentTrackIndex = 0;
-const bgMusic = new Audio(playlist[currentTrackIndex].src);
-bgMusic.volume = 0.4;
-let musicStarted = false;
-let isMuted = false;
+    let currentTrackIndex = 0;
+    const bgMusic = new Audio(playlist[currentTrackIndex].src);
+    bgMusic.volume = 0.4;
+    let musicStarted = false;
+    let isMuted = false;
 
-bgMusic.addEventListener('ended', () => {
-    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-    loadAndPlayTrack(currentTrackIndex);
-});
-
-function loadAndPlayTrack(index) {
-    currentTrackIndex = index;
-    bgMusic.src = playlist[currentTrackIndex].src;
-    musicStarted = true;
-    if (!isMuted) {
-        bgMusic.play().catch(e => console.log("Error de interacción: ", e));
-    }
-    renderPlaylist();
-}
-
-function renderPlaylist() {
-    const list = document.getElementById('playlist-list');
-    list.innerHTML = '';
-    playlist.forEach((track, index) => {
-        const li = document.createElement('li');
-        li.className = 'playlist-item' + (index === currentTrackIndex ? ' active' : '');
-        li.innerHTML = `<span>${index === currentTrackIndex ? '▶' : '🎵'}</span> ${track.name}`;
-        li.onclick = () => {
-            loadAndPlayTrack(index);
-            sfxClick();
-        };
-        li.onmouseenter = sfxHover; 
-        list.appendChild(li);
+    bgMusic.addEventListener('ended', () => {
+        currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+        loadAndPlayTrack(currentTrackIndex);
     });
-}
 
-function togglePlaylist() {
-    document.getElementById('playlist-sidebar').classList.toggle('open');
-    sfxClick();
-}
-
-document.addEventListener("click", () => {
-    if (!musicStarted && !isMuted) {
-        bgMusic.play().catch(e => console.log("Interacción necesaria para audio."));
+    function loadAndPlayTrack(index) {
+        currentTrackIndex = index;
+        bgMusic.src = playlist[currentTrackIndex].src;
         musicStarted = true;
+        
+        if (isMuted === false) {
+            bgMusic.play().catch(e => {
+                console.log(e);
+            });
+        }
+        
+        renderPlaylist();
     }
-});
 
-function toggleMute() {
-    isMuted = !isMuted;
-    const muteBtn = document.getElementById('mute-btn');
-    if (isMuted) {
-        bgMusic.pause();
-        muteBtn.textContent = '🔇';
-    } else {
-        muteBtn.textContent = '🔈';
-        if(musicStarted) bgMusic.play();
+    function renderPlaylist() {
+        const list = document.getElementById('playlist-list');
+        list.innerHTML = '';
+        
+        playlist.forEach((track, index) => {
+            const li = document.createElement('li');
+            
+            if (index === currentTrackIndex) {
+                li.className = 'playlist-item active';
+                li.innerHTML = `<span>▶</span> ${track.name}`;
+            } else {
+                li.className = 'playlist-item';
+                li.innerHTML = `<span>🎵</span> ${track.name}`;
+            }
+            
+            li.onclick = () => {
+                loadAndPlayTrack(index);
+                sfxClick();
+            };
+            
+            li.onmouseenter = sfxHover;
+            list.appendChild(li);
+        });
     }
-    sfxClick();
-}
 
-let audioCtx;
-function initAudioCtx() {
-    if (!audioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AudioContext();
+    function togglePlaylist() {
+        const sidebar = document.getElementById('playlist-sidebar');
+        sidebar.classList.toggle('open');
+        sfxClick();
     }
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-}
 
-function playTone(freq, type, duration, vol) {
-    initAudioCtx(); // Se llamará solo tras la interacción de usuario
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    osc.start(); osc.stop(audioCtx.currentTime + duration);
-}
-
-function sfxHover() { playTone(800, 'sine', 0.1, 0.05); }
-function sfxClick() { playTone(400, 'square', 0.15, 0.1); }
-
-function bindAudioToButtons() {
-    const interactables = document.querySelectorAll('button, .thumbnail, .dev-card, .red, .screenshot');
-    interactables.forEach(el => {
-        if(!el.dataset.audioBound) {
-            el.addEventListener('mouseenter', sfxHover);
-            el.addEventListener('mousedown', sfxClick);
-            el.dataset.audioBound = "true";
+    document.addEventListener("click", () => {
+        if (musicStarted === false && isMuted === false) {
+            bgMusic.play().catch(e => {
+                console.log(e);
+            });
+            musicStarted = true;
         }
     });
-}
 
-function openLightbox(src) {
-    const lb = document.getElementById('lightbox');
-    const img = document.getElementById('lightbox-img');
-    img.src = src;
-    lb.classList.add('active');
-    sfxClick();
-}
-function closeLightbox() {
-    document.getElementById('lightbox').classList.remove('active');
-}
+    function toggleMute() {
+        isMuted = !isMuted;
+        const muteBtn = document.getElementById('mute-btn');
+        
+        if (isMuted === true) {
+            bgMusic.pause();
+            muteBtn.textContent = '🔇';
+        } else {
+            muteBtn.textContent = '🔈';
+            if (musicStarted === true) {
+                bgMusic.play();
+            }
+        }
+        
+        sfxClick();
+    }
 
-document.addEventListener("DOMContentLoaded", () => {
+    function initAudioCtx() {
+        if (!audioCtx) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContext();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playTone(freq, type, duration, vol) {
+        initAudioCtx();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function sfxHover() { 
+        playTone(800, 'sine', 0.1, 0.05); 
+    }
     
-    setTimeout(() => {
-        document.getElementById('load-text').innerHTML = "> ACCESS GRANTED<span class='blink'>_</span>";
+    function sfxClick() { 
+        playTone(400, 'square', 0.15, 0.1); 
+    }
+
+    function bindAudioToButtons() {
+        const interactables = document.querySelectorAll('button, .thumbnail, .dev-card, .red, .screenshot');
+        
+        interactables.forEach(el => {
+            if (el.dataset.audioBound !== "true") {
+                el.addEventListener('mouseenter', sfxHover);
+                el.addEventListener('mousedown', sfxClick);
+                el.dataset.audioBound = "true";
+            }
+        });
+    }
+
+    function openLightbox(src) {
+        const lb = document.getElementById('lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = src;
+        lb.classList.add('active');
+        sfxClick();
+    }
+
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        lb.classList.remove('active');
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
-            document.getElementById('loader').style.opacity = '0';
-            setTimeout(() => document.getElementById('loader').style.visibility = 'hidden', 800);
-        }, 500);
-    }, 1000);
+            const loadText = document.getElementById('load-text');
+            loadText.innerHTML = "> ACCESS GRANTED<span class='blink'>_</span>";
+            
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                
+                setTimeout(() => {
+                    loader.style.visibility = 'hidden';
+                }, 800);
+            }, 500);
+        }, 1000);
 
-    content=document.getElementById("content");
-    updateDynamicText();
-    renderPlaylist();
-    checkHash(); 
-});
+        content = document.getElementById("content");
+        updateDynamicText();
+        renderPlaylist();
+        checkHash(); 
+    });
 
-const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-let konamiIndex = 0;
-document.addEventListener('keydown', (e) => {
-    if (e.key === konamiCode[konamiIndex] || e.key === konamiCode[konamiIndex].toLowerCase()) {
-        konamiIndex++;
-        if (konamiIndex === konamiCode.length) {
-            document.body.classList.toggle('hyper-mode');
-            playTone(1200, 'square', 0.5, 0.2);
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let konamiIndex = 0;
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === konamiCode[konamiIndex] || e.key === konamiCode[konamiIndex].toLowerCase()) {
+            konamiIndex++;
+            if (konamiIndex === konamiCode.length) {
+                document.body.classList.toggle('hyper-mode');
+                playTone(1200, 'square', 0.5, 0.2);
+                konamiIndex = 0;
+            }
+        } else {
             konamiIndex = 0;
         }
-    } else { konamiIndex = 0; }
-});
+    });
 
-let content;
-let currentSection="";
-let lang="es";
-let dogCooldown=false;
-let dogCount=0;
+    window.addEventListener("hashchange", () => {
+        checkHash();
+    });
 
-window.addEventListener("hashchange", () => {
-    checkHash();
-});
-
-function updateDynamicText(){
-    const b=document.querySelectorAll("#navbar button");
-    if(lang==="es"){
-        b[0].textContent="Inicio";
-        b[1].textContent="Proyectos";
-        b[2].textContent="Traducciones";
-        b[3].textContent="Redes";
-        document.getElementById("site-footer").innerHTML=">_ MIRAGE TEAM OS // V.2026 // ALL RIGHTS RESERVED.";
-    }else{
-        b[0].textContent="Home";
-        b[1].textContent="Projects";
-        b[2].textContent="Translations";
-        b[3].textContent="Socials";
-        document.getElementById("site-footer").innerHTML=">_ MIRAGE TEAM OS // V.2026 // ALL RIGHTS RESERVED.";
-    }
-}
-
-function toggleLang(){
-    lang = lang==="es" ? "en":"es";
-    document.getElementById("lang-btn").textContent = lang==="es" ? "ENGLISH":"ESPAÑOL";
-    updateDynamicText();
-    checkHash(); 
-}
-
-function setContent(html, section, customHash){
-    let finalHash = customHash || section;
-    if(currentSection===finalHash && finalHash!=="inicio") return;
-    currentSection=finalHash;
-    
-    try {
-        if(finalHash === 'inicio') history.pushState(null, null, window.location.pathname);
-        else history.pushState(null, null, '#' + finalHash);
-    } catch(e) {
-        console.warn("API de History desactivada en modo local (file://).");
-    }
-
-    content.classList.add("hidden");
-    setTimeout(()=>{
-        content.innerHTML=html;
-        content.classList.remove("hidden");
-        bindAudioToButtons();
-    },300);
-}
-
-function checkHash(forceHash) {
-    let h = forceHash || window.location.hash.substring(1);
-    if (!h || h === 'inicio') { inicio(); return; }
-
-    if (h === 'proyectos') proyectos();
-    else if (h === 'proyectosIndividuales') proyectosIndividuales();
-    else if (h === 'valens429') valens429();
-    else if (h === 'sejerodev') sejerodev();
-    else if (h === 'zerex') zerex();
-    else if (h === 'herramientas') herramientas();
-    else if (h === 'traducciones') traducciones();
-    else if (h === 'redes') redes();
-    else if (h === 'udtsl') udtsl();
-    else if (h === 'purrfect2') purrfect2();
-    else if (h === 'Miragepro') miragepro(); 
-    
-    else if (h === 'valens429_redes') redesValens();
-    else if (h === 'sejerodev_redes') redesSejero();
-    else if (h === 'zerex_redes') redesZerex();
-
-    else if (h === 'DXC') proyecto('Deltarune x Cult of the Lamb', lang==="es"?"En este fangame, Kris, Susie y Ralsei llegan a un nuevo Dark World, pero esta vez, se encuentran en una tierra dominada por un misterioso culto liderado por un pequeño cordero.":"In this fangame, Kris, Susie, and Ralsei arrive in a new Dark World, but this time, they find themselves in a land dominated by a mysterious cult led by a small lamb.", 'https://gamejolt.com/games/COTLXDR/975891', 'proyectos', 'DXC', 'DXC');
-    else if (h === 'UB') proyecto('Undertale Bastille', lang==="es"?"Olvídate de esperar nuevas salas cada dos segundos o de escuchar conversaciones de dos horas. ¡Aquí todo es frenético y trepidante! ¡Lucha, sube de nivel, desbloquea nuevas mazmorras y mucho más!":"Forget about waiting for new rooms every 2 seconds or sitting through 2-hour conversations. Here, everything is fast-paced and frantic! Fight, level up, unlock new dungeons, and more!", 'https://gamejolt.com/games/Undertale-Bastille/987997', 'proyectos', 'UB', 'UB');
-    else if (h === 'PPE') proyecto('Papers Please España', lang==="es"?"Una parodia de Papers Please creada a base de memes para la FakeVirus-JAM 3rd del streamer Seii__.":"A parody of Papers Please created using memes for the FakeVirus-JAM 3rd by streamer Seii__", 'https://gamejolt.com/games/PAPERSPLEASECESP/997156', 'proyectos', 'PPE', 'PPE');
-    else if (h === 'SZ') proyecto('Session Zero', lang==="es"?"Session Zero es experiencia de terror interactivo donde nada es lo que parece. ¿Lograras sobrevivir ala entrevista?. Para el evento Seii__: Si me asusto, te pagaré.":"Session Zero is a an interactive horror experience where nothing is what it seems. Will you survive the interview?. For the Seii__ event: If I get scared, I'll pay you.", 'https://gamejolt.com/games/SessionZero/1031786', 'valens429', 'SZ', 'SZ');
-    else if (h === 'SC') proyecto('Seii´s Crackhouse', lang==="es"?"Versión modificada de Raldis Crackhouse para el streamer Seii__.":"Modified version of Raldis Crackhouse for the streamer Seii__.", 'https://gamejolt.com/games/SEIICRACKHOUSE/973565', 'valens429', 'SC', 'SC');
-    else if (h === 'SE') proyecto('Sonic Exodus', lang==="es"?"Te encuentras en una ROM de Sonic corrupta que debes salvar. Para el evento Seii__: Si me asusto, te pagaré.":"You find yourself in a corrupted Sonic ROM that you need to save. For the Seii__ event: If I get scared, I'll pay you.", 'https://gamejolt.com/games/Sonic-Exodus/1031667', 'sejerodev', 'SE', 'SE');
-    else if (h === 'CTC') proyecto('Cony the Confronter', lang==="es"?"Un juego inspirado en clásicos de NES... ¿pero pirateado? Se desatarán eventos inesperados que darán un giro inesperado al juego. Creado para FakeVirus-JAM 2rd por el streamer Seii__.":"A game inspired by NES classics... but pirated? Unexpected events will unfold, twisting the game in surprising ways. Created for FakeVirus-JAM 2rd by streamer Seii__", 'https://gamejolt.com/games/Cony-the-Confronter/973146', 'sejerodev', 'CTC', 'CTC');
-    else if (h === 'ZA') proyecto('Zerex Adventure', lang==="es"?"¿Podrás enviar a Zerex de vuelta a casa? ¿O morirás en el intento...?":"Will you be able to send Zerex back home? Or will you die trying...?", 'https://gamejolt.com/games/ZA/1035816', 'zerex', 'ZA', 'ZA');
-    else if (h === 'RT') proyecto('RetornedTale', lang==="es"?"has caido a un mundo bajo tierra en busca de algo, una voluntad que te llama. ":"You have fallen into a world underground in search of something, a will that calls you to the rescue. ", 'https://gamejolt.com/games/RETORNEDTALE/1031100', 'zerex', 'RT', 'RT');
-    else if (h === 'DSFM') proyecto('DELTARUNE Save File Management', lang==="es"?"Administra tus partidas de DELTARUNE forma rápida y segura.":"Manage your DELTARUNE saves quickly and securely.", 'https://gamejolt.com/games/DELTARUNESAVE/1006615', 'herramientas', 'DSFM', 'DSFM');
-    else if (h === 'SMM') proyecto('Soul Mod Manager', lang==="es"?"Un gestor de mods de UNDERTALE para personalizar tu experiencia.":"A UNDERTALE mod manager to customize your experience.", 'https://gamejolt.com/games/SMM/978626', 'herramientas', 'SMM', 'SMM');
-    
-    else inicio(); 
-}
-
-function inicio(){
-    setContent(`
-        <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">Team Mirage</h1>
-        <div class="hero-subtitle">
-            ${lang === "es" ? "🛠️ Desarrolladores Indie Principiantes 🛠️" : "🛠️ Beginner Indie Developers 🛠️️"}
-        </div>
-        <p class="texto-destacado">
-        ${lang === "es"
-        ? "Creamos videojuegos con <strong>identidad propia</strong> y experiencias que realmente se disfruten. Cuidamos cada detalle para ofrecer juegos de calidad."
-        : "We create games with a <strong>strong identity</strong> and truly enjoyable experiences. We care about every detail to deliver high-quality games."}
-        </p>
-        <div class="dev-cards">
-            <div class="dev-card" onclick="checkHash('valens429')">
-                <h3>Valens429</h3><p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
-            </div>
-            <div class="dev-card" onclick="checkHash('sejerodev')">
-                <h3>SejeroDev</h3><p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
-            </div>
-            <div class="dev-card" onclick="checkHash('zerex')">
-                <h3>Zerex</h3><p>${lang === "es" ? "Desarrollador" : "Developer"}</p>
-            </div>
-        </div>
-        <button class="action" onclick="checkHash('proyectos')" style="font-size: 16px; padding: 12px 24px;">
-            🚀 ${lang === "es" ? "Ver nuestros proyectos" : "See our projects"}
-        </button>
-    `,"inicio");
-}
-
-function proyectos(){
-    setContent(`
-        <h1 style="margin-top:0;">${lang==="es" ? "Proyectos" : "Projects"}</h1>
-        <img src="images/f1.png" class="thumbnail" onclick="checkHash('DXC')">
-        <img src="images/f2.png" class="thumbnail" onclick="checkHash('UB')">
-        <img src="images/f3.png" class="thumbnail" onclick="checkHash('PPE')">
-        <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
-            <button class="action" onclick="checkHash('proyectosIndividuales')">👤 ${lang==="es"?"Proyectos Individuales":"Individual Projects"}</button>
-            <button class="action" onclick="checkHash('herramientas')">🛠️ ${lang==="es"?"Herramientas":"Tools"}</button>
-        </div>
-    `,"proyectos");
-}
-
-function proyectosIndividuales(){
-    setContent(`
-        <h1 style="margin-top:0;">${lang==="es"?"Proyectos Individuales":"Individual Projects"}</h1>
-        <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
-            <button class="action" style="font-size:16px; padding:12px 24px;" onclick="checkHash('valens429')">Valens429</button>
-            <button class="action" style="font-size:16px; padding:12px 24px;" onclick="checkHash('sejerodev')">SejeroDEV</button>
-            <button class="action" style="font-size:16px; padding:12px 24px;" onclick="checkHash('zerex')">Zerex</button>
-        </div>
-        <div class="submenu"><button class="action" onclick="checkHash('proyectos')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"proyectosIndividuales");
-}
-
-function valens429(){
-    setContent(`
-        <h1 style="margin-top:0;">Valens429</h1>
-        <img src="images/f4.png" class="thumbnail" onclick="checkHash('SZ')">
-        <img src="images/py2.png" class="thumbnail" onclick="checkHash('SC')">
-        <div class="submenu"><button class="action" onclick="checkHash('proyectosIndividuales')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"valens429");
-}
-
-function sejerodev(){
-    setContent(`
-        <h1 style="margin-top:0;">SejeroDEV</h1>
-        <img src="images/sonic.png" class="thumbnail" onclick="checkHash('SE')">
-        <img src="images/cony.png" class="thumbnail" onclick="checkHash('CTC')">
-        <div class="submenu"><button class="action" onclick="checkHash('proyectosIndividuales')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"sejerodev");
-}
-
-function zerex(){
-    setContent(`
-        <h1 style="margin-top:0;">Zerex (En Costruccion)</h1>
-        <img src="images/zerex1.png" class="thumbnail" alt="Zerex Adventure" onclick="checkHash('ZA')">
-        <img src="images/zerex2.png" class="thumbnail" alt="RetornedTale" onclick="checkHash('RT')">
-        <div class="submenu"><button class="action" onclick="checkHash('proyectosIndividuales')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"zerex");
-}
-
-function herramientas(){
-    setContent(`
-        <h1 style="margin-top:0;">${lang==="es"?"Herramientas":"Tools"}</h1>
-        <img src="images/py1.png" class="thumbnail" onclick="checkHash('DSFM')">
-        <img src="images/SMM.png" class="thumbnail" onclick="checkHash('SMM')">
-        <img src="images/pro.png" class="thumbnail" onclick="checkHash('Miragepro')">
+    function updateDynamicText() {
+        const botonesNav = document.querySelectorAll("#navbar button");
+        const footer = document.getElementById("site-footer");
         
-        <div class="submenu"><button class="action" onclick="checkHash('proyectos')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"herramientas");
-}
-
-function proyecto(nombre,desc,link, backHash, prefix, hashName){
-    let galleryHTML = '';
-    if(prefix) {
-        let imgs = '';
-        for(let i=1; i<=5; i++) {
-            let imgSrc = `images/${prefix}${i}.png`;
-            imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
+        if (lang === "es") {
+            botonesNav[0].textContent = "Inicio";
+            botonesNav[1].textContent = "Proyectos";
+            botonesNav[2].textContent = "Traducciones";
+            botonesNav[3].textContent = "Redes";
+        } else {
+            botonesNav[0].textContent = "Home";
+            botonesNav[1].textContent = "Projects";
+            botonesNav[2].textContent = "Translations";
+            botonesNav[3].textContent = "Socials";
         }
-        galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
-    }
-
-    setContent(`
-        ${galleryHTML}
-        <h1 style="margin-top:0;">${nombre}</h1><p>${desc}</p>
-        <a href="${link}" target="_blank"><button class="action">${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
-        <div class="submenu"><button class="action" onclick="checkHash('${backHash}')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"proyecto", hashName);
-}
-
-function miragepro(){
-    let prefix = 'pro'; 
-    let imgs = '';
-    for(let i=1; i<=5; i++) {
-        let imgSrc = `images/${prefix}${i}.png`;
-        imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
-    }
-    let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
-
-    setContent(`
-        ${galleryHTML}
-        <h1 style="margin-top:0;">Mirage Controller</h1>
-        <p>${lang==="es"?"Placeholder":"Placeholder"}</p>
         
-        <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
-            <a href="#" download><button class="action">📥 ${lang==="es"?"Descargar versión gratuita":"Download free version"}</button></a>
-            <a href="https://ko-fi.com/s/a871eaf7ac" target="_blank"><button class="action">🛒 ${lang==="es"?"Comprar":"Buy"}</button></a>
-            <a href="#" target="_blank"><button class="action">📺 ${lang==="es"?"Ver tráiler":"View trailer"}</button></a>
-            <a href="#" target="_blank"><button class="action">📱 TikTok</button></a>
-        </div>
+        footer.innerHTML = ">_ MIRAGE TEAM OS // V.2026 // ALL RIGHTS RESERVED.";
+    }
+
+    function toggleLang() {
+        if (lang === "es") {
+            lang = "en";
+            document.getElementById("lang-btn").textContent = "ESPAÑOL";
+        } else {
+            lang = "es";
+            document.getElementById("lang-btn").textContent = "ENGLISH";
+        }
         
-        <div class="submenu"><button class="action" onclick="checkHash('herramientas')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `, "Miragepro");
-}
-
-function udtsl(){
-    let prefix = 'USL'; 
-    let imgs = '';
-    for(let i=1; i<=5; i++) {
-        let imgSrc = `images/${prefix}${i}.png`;
-        imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
+        updateDynamicText();
+        checkHash(); 
     }
-    let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
 
-    setContent(`
-        ${galleryHTML}
-        <h1 style="margin-top:0;">Undertale: Souls Link</h1>
-        <p>${lang==="es" ? "Traducción al español" : "Spanish translation"}</p>
-        <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
-            <a href="udtsl/7_1 Español.png" download><button class="action">📥 7_1</button></a>
-            <a href="udtsl/7_2 Español.png" download><button class="action">📥 7_2</button></a>
-            <a href="udtsl/7_3 Español.png" download><button class="action">📥 7_3</button></a>
-            <a href="udtsl/8_1 Español.png" download><button class="action">📥 8_1</button></a>
-        </div>
-        <div class="submenu"><button class="action" onclick="checkHash('traducciones')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"udtsl");
-}
+    function setContent(html, section, customHash) {
+        let finalHash = customHash || section;
+        
+        if (currentSection === finalHash && finalHash !== "inicio") {
+            return;
+        }
+        
+        currentSection = finalHash;
+        
+        try {
+            if (finalHash === 'inicio') {
+                history.pushState(null, null, window.location.pathname);
+            } else {
+                history.pushState(null, null, '#' + finalHash);
+            }
+        } catch(e) {
+            console.warn(e);
+        }
 
-function purrfect2(){
-    let prefix = 'PA2_'; 
-    let imgs = '';
-    for(let i=1; i<=5; i++) {
-        let imgSrc = `images/${prefix}${i}.png`;
-        imgs += `<img src="${imgSrc}" class="screenshot" alt="Captura ${i}" onclick="openLightbox('${imgSrc}')">`;
+        content.classList.add("hidden");
+        
+        setTimeout(() => {
+            content.innerHTML = html;
+            content.classList.remove("hidden");
+            bindAudioToButtons();
+        }, 300);
     }
-    let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
 
-    setContent(`
-        ${galleryHTML}
-        <h1 style="margin-top:0;">Purrfect Apawcalypse: Purrgatory Furever</h1>
-        <p>${lang==="es" ? "Parche de traducción al español." : "Spanish translation patch."}</p>
-        <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
-            <a href="https://gamejolt.com/games/PurrfectApawncalypse2ESP/1053196" target="_blank"><button class="action">🎮 ${lang==="es"?"Ir a GameJolt":"Go to GameJolt"}</button></a>
-            <a href="Downloads/Purrfect Apawcalypse Purrgatory Furever! Parche Español.zip" download><button class="action">📥 ${lang==="es"?"Descargar Parche":"Download Patch"}</button></a>
-            <a href="https://youtu.be/qrNUZrtPQfs" target="_blank"><button class="action">📺 ${lang==="es"?"Ver tráiler":"View trailer"}</button></a>
-        </div>
-        <div class="submenu"><button class="action" onclick="checkHash('traducciones')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"purrfect2");
-}
+    function checkHash(forceHash) {
+        let h = forceHash || window.location.hash.substring(1);
+        
+        if (!h || h === 'inicio') {
+            inicio();
+            return;
+        }
 
-function traducciones(){
-    setContent(`
-        <h1 style="margin-top:0;">${lang==="es" ? "Traducciones" : "Translations"}</h1>
-        <img src="images/t1.png" class="thumbnail" onclick="checkHash('udtsl')">
-        <img src="images/Purrfect2.png" class="thumbnail" onclick="checkHash('purrfect2')">
-    `,"traducciones");
-}
+        if (h === 'proyectos') {
+            proyectos();
+        }
+        else if (h === 'proyectosIndividuales') {
+            proyectosIndividuales();
+        }
+        else if (h === 'valens429') {
+            valens429();
+        }
+        else if (h === 'sejerodev') {
+            sejerodev();
+        }
+        else if (h === 'zerex') {
+            zerex();
+        }
+        else if (h === 'herramientas') {
+            herramientas();
+        }
+        else if (h === 'traducciones') {
+            traducciones();
+        }
+        else if (h === 'redes') {
+            redes();
+        }
+        else if (h === 'udtsl') {
+            udtsl();
+        }
+        else if (h === 'purrfect2') {
+            purrfect2();
+        }
+        else if (h === 'Miragepro') {
+            miragepro(); 
+        }
+        else if (h === 'valens429_redes') {
+            redesValens();
+        }
+        else if (h === 'sejerodev_redes') {
+            redesSejero();
+        }
+        else if (h === 'zerex_redes') {
+            redesZerex();
+        }
+        else if (h === 'DXC') {
+            proyecto(
+                'Deltarune x Cult of the Lamb', 
+                lang === "es" ? "En este fangame, Kris, Susie y Ralsei llegan a un nuevo Dark World, pero esta vez, se encuentran en una tierra dominada por un misterioso culto liderado por un pequeño cordero." : "In this fangame, Kris, Susie, and Ralsei arrive in a new Dark World, but this time, they find themselves in a land dominated by a mysterious cult led by a small lamb.", 
+                'https://gamejolt.com/games/COTLXDR/975891', 
+                'proyectos', 
+                'DXC', 
+                'DXC'
+            );
+        }
+        else if (h === 'UB') {
+            proyecto(
+                'Undertale Bastille', 
+                lang === "es" ? "Olvídate de esperar nuevas salas cada dos segundos o de escuchar conversaciones de dos horas. ¡Aquí todo es frenético y trepidante! ¡Lucha, sube de nivel, desbloquea nuevas mazmorras y mucho más!" : "Forget about waiting for new rooms every 2 seconds or sitting through 2-hour conversations. Here, everything is fast-paced and frantic! Fight, level up, unlock new dungeons, and more!", 
+                'https://gamejolt.com/games/Undertale-Bastille/987997', 
+                'proyectos', 
+                'UB', 
+                'UB'
+            );
+        }
+        else if (h === 'PPE') {
+            proyecto(
+                'Papers Please España', 
+                lang === "es" ? "Una parodia de Papers Please creada a base de memes." : "A parody of Papers Please created using memes.", 
+                'https://gamejolt.com/games/PAPERSPLEASECESP/997156', 
+                'proyectos', 
+                'PPE', 
+                'PPE',
+                { es: "Creado para la FakeVirus-JAM 3rd del streamer Seii__", en: "Created for the FakeVirus-JAM 3rd by streamer Seii__" }
+            );
+        }
+        else if (h === 'SZ') {
+            proyecto(
+                'Session Zero', 
+                lang === "es" ? "Experiencia de terror interactivo donde nada es lo que parece. ¿Lograrás sobrevivir a la entrevista?" : "An interactive horror experience where nothing is what it seems. Will you survive the interview?", 
+                'https://gamejolt.com/games/SessionZero/1031786', 
+                'valens429', 
+                'SZ', 
+                'SZ',
+                { es: "Para el evento de Seii__: Si me asusto, te pagaré", en: "For the Seii__ event: If I get scared, I'll pay you" }
+            );
+        }
+        else if (h === 'SC') {
+            proyecto(
+                'Seii´s Crackhouse', 
+                lang === "es" ? "Una experiencia bizarra y caótica llena de referencias." : "A bizarre and chaotic experience full of references.", 
+                'https://gamejolt.com/games/SEIICRACKHOUSE/973565', 
+                'valens429', 
+                'SC', 
+                'SC',
+                { es: "Versión modificada de Raldis Crackhouse para el streamer Seii__", en: "Modified version of Raldis Crackhouse for the streamer Seii__" }
+            );
+        }
+        else if (h === 'SE') {
+            proyecto(
+                'Sonic Exodus', 
+                lang === "es" ? "Te encuentras en una ROM de Sonic corrupta que debes salvar." : "You find yourself in a corrupted Sonic ROM that you need to save.", 
+                'https://gamejolt.com/games/Sonic-Exodus/1031667', 
+                'sejerodev', 
+                'SE', 
+                'SE',
+                { es: "Para el evento de Seii__: Si me asusto, te pagaré", en: "For the Seii__ event: If I get scared, I'll pay you" }
+            );
+        }
+        else if (h === 'CTC') {
+            proyecto(
+                'Cony the Confronter', 
+                lang === "es" ? "Un juego inspirado en clásicos de NES... ¿pero pirateado? Se desatarán eventos inesperados que darán un giro inesperado al juego." : "A game inspired by NES classics... but pirated? Unexpected events will unfold, twisting the game in surprising ways.", 
+                'https://gamejolt.com/games/Cony-the-Confronter/973146', 
+                'sejerodev', 
+                'CTC', 
+                'CTC',
+                { es: "Creado para la FakeVirus-JAM 2nd por el streamer Seii__", en: "Created for FakeVirus-JAM 2nd by streamer Seii__" }
+            );
+        }
+        else if (h === 'ZA') {
+            proyecto(
+                'Zerex Adventure', 
+                lang === "es" ? "¿Podrás enviar a Zerex de vuelta a casa? ¿O morirás en el intento...?" : "Will you be able to send Zerex back home? Or will you die trying...?", 
+                'https://gamejolt.com/games/ZA/1035816', 
+                'zerex', 
+                'ZA', 
+                'ZA'
+            );
+        }
+        else if (h === 'RT') {
+            proyecto(
+                'RetornedTale', 
+                lang === "es" ? "Has caído a un mundo bajo tierra en busca de algo, una voluntad que te llama al rescate." : "You have fallen into a world underground in search of something, a will that calls you to the rescue.", 
+                'https://gamejolt.com/games/RETORNEDTALE/1031100', 
+                'zerex', 
+                'RT', 
+                'RT'
+            );
+        }
+        else if (h === 'DSFM') {
+            proyecto(
+                'DELTARUNE Save File Management', 
+                lang === "es" ? "Administra tus partidas de DELTARUNE forma rápida y segura." : "Manage your DELTARUNE saves quickly and securely.", 
+                'https://gamejolt.com/games/DELTARUNESAVE/1006615', 
+                'herramientas', 
+                'DSFM', 
+                'DSFM'
+            );
+        }
+        else if (h === 'SMM') {
+            proyecto(
+                'Soul Mod Manager', 
+                lang === "es" ? "Un gestor de mods de UNDERTALE para personalizar tu experiencia." : "A UNDERTALE mod manager to customize your experience.", 
+                'https://gamejolt.com/games/SMM/978626', 
+                'herramientas', 
+                'SMM', 
+                'SMM'
+            );
+        }
+        else {
+            inicio(); 
+        }
+    }
 
-function redes(){
-    setContent(`
-        <h1 style="margin-top:0;">${lang==="es"?"Redes de Mirage Team":"Mirage Team Socials"}</h1>
-        <div class="redes-grid">
-            <a class="red" href="https://discord.gg/3faZHrnd4j" target="_blank">Discord</a>
-            <a class="red" href="https://gamejolt.com/@MirageTeam" target="_blank">GameJolt</a>
-            <a class="red" href="https://linktr.ee/MirageTeam1" target="_blank">Linktree</a>
-            <a class="red" href="https://www.youtube.com/@MirageTeamGJ" target="_blank">YouTube</a>
-        </div>
-        <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
-            <button class="action" onclick="checkHash('valens429_redes')">👤 Valens429</button>
-            <button class="action" onclick="checkHash('sejerodev_redes')">👤 SejeroDEV</button>
-            <button class="action" onclick="checkHash('zerex_redes')">👤 Zerex</button>
-        </div>
-    `,"redes");
-}
+    function inicio() {
+        let title = "Team Mirage";
+        let subTitle = lang === "es" ? "🛠️ Desarrolladores Indie Principiantes 🛠️" : "🛠️ Beginner Indie Developers 🛠️";
+        let description = lang === "es" 
+            ? "Creamos videojuegos con <strong>identidad propia</strong> y experiencias que realmente se disfruten. Cuidamos cada detalle para ofrecer juegos de calidad." 
+            : "We create games with a <strong>strong identity</strong> and truly enjoyable experiences. We care about every detail to deliver high-quality games.";
+        let role = lang === "es" ? "Desarrollador" : "Developer";
+        let btnText = lang === "es" ? "Ver nuestros proyectos" : "See our projects";
 
-function redesValens(){
-    setContent(`
-        <img src="images/valens.png" class="profile-pic" alt="Valens429">
-        <h1 style="margin-top: 5px;">Valens429</h1>
-        <p style="color: #00CFFF; margin-top: 0;">${lang==="es"?"Mis redes personales":"My personal links"}</p>
-        <div class="redes-grid">
-            <a class="red" href="https://www.youtube.com/@Valens429VODs?sub_confirmation=1" target="_blank">YouTube</a>
-            <a class="red" href="https://www.twitch.tv/nyxr_ar" target="_blank">Twitch</a>
-            <a class="red" href="https://www.youtube.com/@CodigoDeterminacion?sub_confirmation=1" target="_blank">Canal UTDR</a>
-            <a class="red" href="https://gamejolt.com/@Valens429" target="_blank">GameJolt</a>
-            <a class="red" href="https://discord.com/invite/AY5BDRRpP6" target="_blank">Discord</a>
-            <a class="red" href="https://www.tiktok.com/@nyxrar" target="_blank">TikTok</a>
-        </div>
-        <div class="submenu"><button class="action" onclick="checkHash('redes')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"valens429_redes");
-}
+        setContent(`
+            <h1 style="font-size: 2.5em; margin-bottom: 5px; margin-top: 0; text-shadow: 0 0 10px #00CFFF;">
+                ${title}
+            </h1>
+            
+            <div class="hero-subtitle">
+                ${subTitle}
+            </div>
+            
+            <p class="texto-destacado">
+                ${description}
+            </p>
+            
+            <div class="dev-cards">
+                <div class="dev-card" onclick="checkHash('valens429')">
+                    <h3>Valens429</h3>
+                    <p>${role}</p>
+                </div>
+                
+                <div class="dev-card" onclick="checkHash('sejerodev')">
+                    <h3>SejeroDev</h3>
+                    <p>${role}</p>
+                </div>
+                
+                <div class="dev-card" onclick="checkHash('zerex')">
+                    <h3>Zerex</h3>
+                    <p>${role}</p>
+                </div>
+            </div>
+            
+            <button class="action" onclick="checkHash('proyectos')" style="font-size: 16px; padding: 12px 24px;">
+                🚀 ${btnText}
+            </button>
+        `, "inicio");
+    }
 
-function redesSejero(){
-    setContent(`
-        <img src="images/sejero.png" class="profile-pic" alt="SejeroDEV">
-        <h1 style="margin-top: 5px;">SejeroDEV</h1>
-        <p style="color: #00CFFF; margin-top: 0;">${lang==="es"?"Mis redes personales":"My personal links"}</p>
-        <div class="redes-grid">
-            <a class="red" href="https://gamejolt.com/@SejeroDev" target="_blank">GameJolt</a>
-            <a class="red" href="https://www.youtube.com/@El-EseEse" target="_blank">Canal UTDR</a>
-            <a class="red" href="https://soundcloud.com/sejerodev" target="_blank">SoundCloud</a>
-            <a class="red" href="https://discord.gg/kP3HScENKd" target="_blank">Discord</a>
-        </div>
-        <div class="submenu"><button class="action" onclick="checkHash('redes')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"sejerodev_redes");
-}
+    function proyectos() {
+        let title = lang === "es" ? "Proyectos" : "Projects";
+        let btn1 = lang === "es" ? "Proyectos Individuales" : "Individual Projects";
+        let btn2 = lang === "es" ? "Herramientas" : "Tools";
 
-function redesZerex(){
-    setContent(`
-        <img src="images/zerex.png" class="profile-pic" alt="Zerex">
-        <h1 style="margin-top: 5px;">Zerex</h1>
-        <p style="color: #00CFFF; margin-top: 0;">${lang==="es"?"Mis redes personales":"My personal links"}</p>
-        <div class="redes-grid">
-            <a class="red" href="https://gamejolt.com/@Zerex_Studio" target="_blank">GameJolt</a>
-            <a class="red" href="https://discord.gg/V2gjYa8KEK" target="_blank">Discord</a>
-            <a class="red" href="#" target="_blank">None</a>
-            <a class="red" href="#" target="_blank">None</a>
-        </div>
-        <div class="submenu"><button class="action" onclick="checkHash('redes')">← ${lang==="es"?"Volver":"Back"}</button></div>
-    `,"zerex_redes");
-}
+        setContent(`
+            <h1 style="margin-top:0;">
+                ${title}
+            </h1>
+            
+            <img src="images/f1.png" class="thumbnail" onclick="checkHash('DXC')" alt="DXC">
+            <img src="images/f2.png" class="thumbnail" onclick="checkHash('UB')" alt="UB">
+            <img src="images/f3.png" class="thumbnail" onclick="checkHash('PPE')" alt="PPE">
+            
+            <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+                <button class="action" onclick="checkHash('proyectosIndividuales')">
+                    👤 ${btn1}
+                </button>
+                <button class="action" onclick="checkHash('herramientas')">
+                    🛠️ ${btn2}
+                </button>
+            </div>
+        `, "proyectos");
+    }
 
-function dog(){
-    if(dogCooldown) return;
-    dogCooldown=true;
-    dogCount++;
-    document.getElementById("dog-counter").textContent=""+dogCount;
-    sfxClick();
-    const audio=new Audio("audio/dog.mp3");
-    audio.play().catch(e => console.log("Audio de perro no encontrado, usando backup sintetizado"));
-    audio.onended=()=>dogCooldown=false;
-    setTimeout(() => dogCooldown=false, 3000); 
-}
+    function proyectosIndividuales() {
+        let title = lang === "es" ? "Proyectos Individuales" : "Individual Projects";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <h1 style="margin-top:0;">
+                ${title}
+            </h1>
+            
+            <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
+                <button class="action" style="font-size:16px; padding:12px 24px;" onclick="checkHash('valens429')">
+                    Valens429
+                </button>
+                <button class="action" style="font-size:16px; padding:12px 24px;" onclick="checkHash('sejerodev')">
+                    SejeroDEV
+                </button>
+                <button class="action" style="font-size:16px; padding:12px 24px;" onclick="checkHash('zerex')">
+                    Zerex
+                </button>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('proyectos')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "proyectosIndividuales");
+    }
+
+    function valens429() {
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <h1 style="margin-top:0;">Valens429</h1>
+            
+            <img src="images/f4.png" class="thumbnail" onclick="checkHash('SZ')" alt="SZ">
+            <img src="images/py2.png" class="thumbnail" onclick="checkHash('SC')" alt="SC">
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('proyectosIndividuales')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "valens429");
+    }
+
+    function sejerodev() {
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <h1 style="margin-top:0;">SejeroDEV</h1>
+            
+            <img src="images/sonic.png" class="thumbnail" onclick="checkHash('SE')" alt="SE">
+            <img src="images/cony.png" class="thumbnail" onclick="checkHash('CTC')" alt="CTC">
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('proyectosIndividuales')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "sejerodev");
+    }
+
+    function zerex() {
+        let backBtn = lang === "es" ? "Volver" : "Back";
+        let title = lang === "es" ? "Zerex (En Construcción)" : "Zerex (Under Construction)";
+
+        setContent(`
+            <h1 style="margin-top:0;">${title}</h1>
+            
+            <img src="images/zerex1.png" class="thumbnail" alt="Zerex Adventure" onclick="checkHash('ZA')">
+            <img src="images/zerex2.png" class="thumbnail" alt="RetornedTale" onclick="checkHash('RT')">
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('proyectosIndividuales')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "zerex");
+    }
+
+    function herramientas() {
+        let title = lang === "es" ? "Herramientas" : "Tools";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <h1 style="margin-top:0;">
+                ${title}
+            </h1>
+            
+            <img src="images/py1.png" class="thumbnail" onclick="checkHash('DSFM')" alt="DSFM">
+            <img src="images/SMM.png" class="thumbnail" onclick="checkHash('SMM')" alt="SMM">
+            <img src="images/pro.png" class="thumbnail" onclick="checkHash('Miragepro')" alt="Miragepro">
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('proyectos')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "herramientas");
+    }
+
+    function proyecto(nombre, desc, link, backHash, prefix, hashName, eventoSeii) {
+        let galleryHTML = '';
+        
+        if (prefix) {
+            let imgs = '';
+            for (let i = 1; i <= 5; i++) {
+                let imgSrc = `images/${prefix}${i}.png`;
+                imgs += `
+                    <img 
+                        src="${imgSrc}" 
+                        class="screenshot" 
+                        alt="Captura ${i}" 
+                        onclick="openLightbox('${imgSrc}')"
+                    >
+                `;
+            }
+            galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+        }
+
+        let iconoSeiiHTML = '';
+        
+        if (eventoSeii !== undefined) {
+            let textoHover = lang === "es" ? eventoSeii.es : eventoSeii.en;
+            iconoSeiiHTML = `
+                <img 
+                    src="images/seii.png" 
+                    class="seii-icon" 
+                    alt="Icono Evento Seii" 
+                    title="${textoHover}"
+                >
+            `;
+        }
+
+        let btnLink = lang === "es" ? "Ir a GameJolt" : "Go to GameJolt";
+        let btnBack = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            ${galleryHTML}
+            
+            <div class="titulo-proyecto">
+                <h1>${nombre}</h1>
+                ${iconoSeiiHTML}
+            </div>
+            
+            <p>${desc}</p>
+            
+            <a href="${link}" target="_blank">
+                <button class="action">
+                    🎮 ${btnLink}
+                </button>
+            </a>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('${backHash}')">
+                    ← ${btnBack}
+                </button>
+            </div>
+        `, "proyecto", hashName);
+    }
+
+    function miragepro() {
+        let prefix = 'pro'; 
+        let imgs = '';
+        
+        for (let i = 1; i <= 5; i++) {
+            let imgSrc = `images/${prefix}${i}.png`;
+            imgs += `
+                <img 
+                    src="${imgSrc}" 
+                    class="screenshot" 
+                    alt="Captura ${i}" 
+                    onclick="openLightbox('${imgSrc}')"
+                >
+            `;
+        }
+        
+        let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+        
+        let titleText = "Mirage Controller";
+        let descText = lang === "es" ? "Placeholder" : "Placeholder";
+        let btnFree = lang === "es" ? "Descargar versión gratuita" : "Download free version";
+        let btnBuy = lang === "es" ? "Comprar" : "Buy";
+        let btnTrailer = lang === "es" ? "Ver tráiler" : "View trailer";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            ${galleryHTML}
+            
+            <h1 style="margin-top:0;">
+                ${titleText}
+            </h1>
+            
+            <p>${descText}</p>
+            
+            <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
+                <a href="#" download>
+                    <button class="action">
+                        📥 ${btnFree}
+                    </button>
+                </a>
+                <a href="https://ko-fi.com/s/a871eaf7ac" target="_blank">
+                    <button class="action">
+                        🛒 ${btnBuy}
+                    </button>
+                </a>
+                <a href="#" target="_blank">
+                    <button class="action">
+                        📺 ${btnTrailer}
+                    </button>
+                </a>
+                <a href="#" target="_blank">
+                    <button class="action">
+                        📱 TikTok
+                    </button>
+                </a>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('herramientas')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "Miragepro");
+    }
+
+    function udtsl() {
+        let prefix = 'USL'; 
+        let imgs = '';
+        
+        for (let i = 1; i <= 5; i++) {
+            let imgSrc = `images/${prefix}${i}.png`;
+            imgs += `
+                <img 
+                    src="${imgSrc}" 
+                    class="screenshot" 
+                    alt="Captura ${i}" 
+                    onclick="openLightbox('${imgSrc}')"
+                >
+            `;
+        }
+        
+        let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+        let descText = lang === "es" ? "Traducción al español" : "Spanish translation";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            ${galleryHTML}
+            
+            <h1 style="margin-top:0;">Undertale: Souls Link</h1>
+            
+            <p>${descText}</p>
+            
+            <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
+                <a href="udtsl/7_1 Español.png" download>
+                    <button class="action">📥 7_1</button>
+                </a>
+                <a href="udtsl/7_2 Español.png" download>
+                    <button class="action">📥 7_2</button>
+                </a>
+                <a href="udtsl/7_3 Español.png" download>
+                    <button class="action">📥 7_3</button>
+                </a>
+                <a href="udtsl/8_1 Español.png" download>
+                    <button class="action">📥 8_1</button>
+                </a>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('traducciones')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "udtsl");
+    }
+
+    function purrfect2() {
+        let prefix = 'PA2_'; 
+        let imgs = '';
+        
+        for (let i = 1; i <= 5; i++) {
+            let imgSrc = `images/${prefix}${i}.png`;
+            imgs += `
+                <img 
+                    src="${imgSrc}" 
+                    class="screenshot" 
+                    alt="Captura ${i}" 
+                    onclick="openLightbox('${imgSrc}')"
+                >
+            `;
+        }
+        
+        let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
+        
+        let descText = lang === "es" ? "Parche de traducción al español." : "Spanish translation patch.";
+        let btnGJ = lang === "es" ? "Ir a GameJolt" : "Go to GameJolt";
+        let btnPatch = lang === "es" ? "Descargar Parche" : "Download Patch";
+        let btnTrailer = lang === "es" ? "Ver tráiler" : "View trailer";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            ${galleryHTML}
+            
+            <h1 style="margin-top:0;">Purrfect Apawcalypse: Purrgatory Furever</h1>
+            
+            <p>${descText}</p>
+            
+            <div style="display:flex;flex-wrap:wrap;gap:15px;justify-content:center;margin-top:20px;">
+                <a href="https://gamejolt.com/games/PurrfectApawncalypse2ESP/1053196" target="_blank">
+                    <button class="action">
+                        🎮 ${btnGJ}
+                    </button>
+                </a>
+                <a href="Downloads/Purrfect Apawcalypse Purrgatory Furever! Parche Español.zip" download>
+                    <button class="action">
+                        📥 ${btnPatch}
+                    </button>
+                </a>
+                <a href="https://youtu.be/qrNUZrtPQfs" target="_blank">
+                    <button class="action">
+                        📺 ${btnTrailer}
+                    </button>
+                </a>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('traducciones')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "purrfect2");
+    }
+
+    function traducciones() {
+        let title = lang === "es" ? "Traducciones" : "Translations";
+
+        setContent(`
+            <h1 style="margin-top:0;">
+                ${title}
+            </h1>
+            
+            <img src="images/t1.png" class="thumbnail" onclick="checkHash('udtsl')" alt="UDTSL">
+            <img src="images/Purrfect2.png" class="thumbnail" onclick="checkHash('purrfect2')" alt="Purrfect2">
+        `, "traducciones");
+    }
+
+    function redes() {
+        let title = lang === "es" ? "Redes de Mirage Team" : "Mirage Team Socials";
+
+        setContent(`
+            <h1 style="margin-top:0;">
+                ${title}
+            </h1>
+            
+            <div class="redes-grid">
+                <a class="red" href="https://discord.gg/3faZHrnd4j" target="_blank">Discord</a>
+                <a class="red" href="https://gamejolt.com/@MirageTeam" target="_blank">GameJolt</a>
+                <a class="red" href="https://linktr.ee/MirageTeam1" target="_blank">Linktree</a>
+                <a class="red" href="https://www.youtube.com/@MirageTeamGJ" target="_blank">YouTube</a>
+            </div>
+            
+            <div class="submenu" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-top:20px;">
+                <button class="action" onclick="checkHash('valens429_redes')">
+                    👤 Valens429
+                </button>
+                <button class="action" onclick="checkHash('sejerodev_redes')">
+                    👤 SejeroDEV
+                </button>
+                <button class="action" onclick="checkHash('zerex_redes')">
+                    👤 Zerex
+                </button>
+            </div>
+        `, "redes");
+    }
+
+    function redesValens() {
+        let subtitle = lang === "es" ? "Mis redes personales" : "My personal links";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <img src="images/valens.png" class="profile-pic" alt="Valens429">
+            
+            <h1 style="margin-top: 5px;">Valens429</h1>
+            
+            <p style="color: #00CFFF; margin-top: 0;">
+                ${subtitle}
+            </p>
+            
+            <div class="redes-grid">
+                <a class="red" href="https://www.youtube.com/@Valens429VODs?sub_confirmation=1" target="_blank">YouTube</a>
+                <a class="red" href="https://www.twitch.tv/nyxr_ar" target="_blank">Twitch</a>
+                <a class="red" href="https://www.youtube.com/@CodigoDeterminacion?sub_confirmation=1" target="_blank">Canal UTDR</a>
+                <a class="red" href="https://gamejolt.com/@Valens429" target="_blank">GameJolt</a>
+                <a class="red" href="https://discord.com/invite/AY5BDRRpP6" target="_blank">Discord</a>
+                <a class="red" href="https://www.tiktok.com/@nyxrar" target="_blank">TikTok</a>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('redes')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "valens429_redes");
+    }
+
+    function redesSejero() {
+        let subtitle = lang === "es" ? "Mis redes personales" : "My personal links";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <img src="images/sejero.png" class="profile-pic" alt="SejeroDEV">
+            
+            <h1 style="margin-top: 5px;">SejeroDEV</h1>
+            
+            <p style="color: #00CFFF; margin-top: 0;">
+                ${subtitle}
+            </p>
+            
+            <div class="redes-grid">
+                <a class="red" href="https://gamejolt.com/@SejeroDev" target="_blank">GameJolt</a>
+                <a class="red" href="https://www.youtube.com/@El-EseEse" target="_blank">Canal UTDR</a>
+                <a class="red" href="https://soundcloud.com/sejerodev" target="_blank">SoundCloud</a>
+                <a class="red" href="https://discord.gg/kP3HScENKd" target="_blank">Discord</a>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('redes')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "sejerodev_redes");
+    }
+
+    function redesZerex() {
+        let subtitle = lang === "es" ? "Mis redes personales" : "My personal links";
+        let backBtn = lang === "es" ? "Volver" : "Back";
+
+        setContent(`
+            <img src="images/zerex.png" class="profile-pic" alt="Zerex">
+            
+            <h1 style="margin-top: 5px;">Zerex</h1>
+            
+            <p style="color: #00CFFF; margin-top: 0;">
+                ${subtitle}
+            </p>
+            
+            <div class="redes-grid">
+                <a class="red" href="https://gamejolt.com/@Zerex_Studio" target="_blank">GameJolt</a>
+                <a class="red" href="https://discord.gg/V2gjYa8KEK" target="_blank">Discord</a>
+                <a class="red" href="#" target="_blank">None</a>
+                <a class="red" href="#" target="_blank">None</a>
+            </div>
+            
+            <div class="submenu">
+                <button class="action" onclick="checkHash('redes')">
+                    ← ${backBtn}
+                </button>
+            </div>
+        `, "zerex_redes");
+    }
+
+    function dog() {
+        if (dogCooldown === true) {
+            return;
+        }
+        
+        dogCooldown = true;
+        dogCount++;
+        
+        document.getElementById("dog-counter").textContent = "" + dogCount;
+        sfxClick();
+        
+        const audio = new Audio("audio/dog.mp3");
+        
+        audio.play().catch(e => {
+            console.log(e);
+        });
+        
+        audio.onended = () => {
+            dogCooldown = false;
+        };
+        
+        setTimeout(() => {
+            dogCooldown = false;
+        }, 3000); 
+    }
 </script>
 
 </body>
 </html>
-
-
-
-
-
-
-
