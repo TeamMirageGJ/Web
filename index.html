@@ -1303,29 +1303,13 @@
                 </button>
             </div>
         `, "proyecto", hashName);
+        
 function miragepro() {
-    setContent(`
-        <h1 style="color:#00CFFF;">>_ REDIRECTING...</h1>
-        
-        <p style="margin-top:10px;">
-            Estás siendo redireccionado a Mirage Controller.
-        </p>
-        
-        <p style="margin-top:20px; color:#888;">
-            Si no fuiste redireccionado automáticamente:
-        </p>
-        
-        <a href="https://teammiragegj.github.io/Web/m-c/" target="_blank">
-            <button class="action">
-                🚀 CLICK AQUÍ
-            </button>
-        </a>
-    `, "mirage_redirect");
-
-    // Redirección automática después de 2.5s
-    setTimeout(() => {
-        window.location.href = "https://teammiragegj.github.io/Web/m-c/";
-    }, 2500);
+    let confirmacion = confirm("Estás por ir a otra página web del Team Mirage.");
+    
+    if (confirmacion) {
+        window.open("https://teammiragegj.github.io/Web/m-c/", "_blank");
+    }
 }
 
     function udtsl() {
