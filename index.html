@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
+
     <title>Team Mirage</title>
 
     <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
@@ -674,23 +674,23 @@
         currentTrackIndex = index;
         bgMusic.src = playlist[currentTrackIndex].src;
         musicStarted = true;
-        
+
         if (isMuted === false) {
             bgMusic.play().catch(e => {
                 console.log(e);
             });
         }
-        
+
         renderPlaylist();
     }
 
     function renderPlaylist() {
         const list = document.getElementById('playlist-list');
         list.innerHTML = '';
-        
+
         playlist.forEach((track, index) => {
             const li = document.createElement('li');
-            
+
             if (index === currentTrackIndex) {
                 li.className = 'playlist-item active';
                 li.innerHTML = `<span>▶</span> ${track.name}`;
@@ -698,12 +698,12 @@
                 li.className = 'playlist-item';
                 li.innerHTML = `<span>🎵</span> ${track.name}`;
             }
-            
+
             li.onclick = () => {
                 loadAndPlayTrack(index);
                 sfxClick();
             };
-            
+
             li.onmouseenter = sfxHover;
             list.appendChild(li);
         });
@@ -727,7 +727,7 @@
     function toggleMute() {
         isMuted = !isMuted;
         const muteBtn = document.getElementById('mute-btn');
-        
+
         if (isMuted === true) {
             bgMusic.pause();
             muteBtn.textContent = '🔇';
@@ -737,7 +737,7 @@
                 bgMusic.play();
             }
         }
-        
+
         sfxClick();
     }
 
@@ -755,16 +755,16 @@
         initAudioCtx();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-        
+
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        
+
         gain.gain.setValueAtTime(vol, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-        
+
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        
+
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
     }
@@ -772,14 +772,14 @@
     function sfxHover() { 
         playTone(800, 'sine', 0.1, 0.05); 
     }
-    
+
     function sfxClick() { 
         playTone(400, 'square', 0.15, 0.1); 
     }
 
     function bindAudioToButtons() {
         const interactables = document.querySelectorAll('button, .thumbnail, .dev-card, .red, .screenshot');
-        
+
         interactables.forEach(el => {
             if (el.dataset.audioBound !== "true") {
                 el.addEventListener('mouseenter', sfxHover);
@@ -806,11 +806,11 @@
         setTimeout(() => {
             const loadText = document.getElementById('load-text');
             loadText.innerHTML = "> ACCESS GRANTED<span class='blink'>_</span>";
-            
+
             setTimeout(() => {
                 const loader = document.getElementById('loader');
                 loader.style.opacity = '0';
-                
+
                 setTimeout(() => {
                     loader.style.visibility = 'hidden';
                 }, 800);
@@ -825,7 +825,7 @@
 
     const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
     let konamiIndex = 0;
-    
+
     document.addEventListener('keydown', (e) => {
         if (e.key === konamiCode[konamiIndex] || e.key === konamiCode[konamiIndex].toLowerCase()) {
             konamiIndex++;
@@ -846,7 +846,7 @@
     function updateDynamicText() {
         const botonesNav = document.querySelectorAll("#navbar button");
         const footer = document.getElementById("site-footer");
-        
+
         if (lang === "es") {
             botonesNav[0].textContent = "Inicio";
             botonesNav[1].textContent = "Proyectos";
@@ -858,7 +858,7 @@
             botonesNav[2].textContent = "Translations";
             botonesNav[3].textContent = "Socials";
         }
-        
+
         footer.innerHTML = ">_ MIRAGE TEAM OS // V.2026 // Contact: MirageTeam11@gmail.com";
     }
 
@@ -870,20 +870,20 @@
             lang = "es";
             document.getElementById("lang-btn").textContent = "ENGLISH";
         }
-        
+
         updateDynamicText();
         checkHash(); 
     }
 
     function setContent(html, section, customHash) {
         let finalHash = customHash || section;
-        
+
         if (currentSection === finalHash && finalHash !== "inicio") {
             return;
         }
-        
+
         currentSection = finalHash;
-        
+
         try {
             if (finalHash === 'inicio') {
                 history.pushState(null, null, window.location.pathname);
@@ -895,7 +895,7 @@
         }
 
         content.classList.add("hidden");
-        
+
         setTimeout(() => {
             content.innerHTML = html;
             content.classList.remove("hidden");
@@ -905,7 +905,7 @@
 
     function checkHash(forceHash) {
         let h = forceHash || window.location.hash.substring(1);
-        
+
         if (!h || h === 'inicio') {
             inicio();
             return;
@@ -1247,7 +1247,7 @@
 
     function proyecto(nombre, desc, link, backHash, prefix, hashName, eventoSeii) {
         let galleryHTML = '';
-        
+
         if (prefix) {
             let imgs = '';
             for (let i = 1; i <= 5; i++) {
@@ -1265,7 +1265,7 @@
         }
 
         let iconoSeiiHTML = '';
-        
+
         if (eventoSeii !== undefined) {
             let textoHover = lang === "es" ? eventoSeii.es : eventoSeii.en;
             iconoSeiiHTML = `
@@ -1303,7 +1303,8 @@
                 </button>
             </div>
         `, "proyecto", hashName);
-        
+    }
+
 function miragepro() {
     let confirmacion = confirm("Estás por ir a otra página web del Team Mirage.");
     
@@ -1315,7 +1316,7 @@ function miragepro() {
     function udtsl() {
         let prefix = 'USL'; 
         let imgs = '';
-        
+
         for (let i = 1; i <= 5; i++) {
             let imgSrc = `images/${prefix}${i}.png`;
             imgs += `
@@ -1327,7 +1328,7 @@ function miragepro() {
                 >
             `;
         }
-        
+
         let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
         let descText = lang === "es" ? "Traducción al español" : "Spanish translation";
         let backBtn = lang === "es" ? "Volver" : "Back";
@@ -1365,7 +1366,7 @@ function miragepro() {
     function purrfect2() {
         let prefix = 'PA2_'; 
         let imgs = '';
-        
+
         for (let i = 1; i <= 5; i++) {
             let imgSrc = `images/${prefix}${i}.png`;
             imgs += `
@@ -1377,9 +1378,9 @@ function miragepro() {
                 >
             `;
         }
-        
+
         let galleryHTML = `<div class="screenshot-gallery">${imgs}</div>`;
-        
+
         let descText = lang === "es" ? "Parche de traducción al español. Utiliza la descarga de GameJolt para obtener la última versión; este proyecto se actualiza constantemente." : "Spanish translation patch. Use the GameJolt download to get the latest version; this project is constantly being updated.";
         let btnGJ = lang === "es" ? "Ir a GameJolt" : "Go to GameJolt";
         let btnPatch = lang === "es" ? "Descargar Parche" : "Download Patch";
@@ -1551,23 +1552,23 @@ function miragepro() {
         if (dogCooldown === true) {
             return;
         }
-        
+
         dogCooldown = true;
         dogCount++;
-        
+
         document.getElementById("dog-counter").textContent = "" + dogCount;
         sfxClick();
-        
+
         const audio = new Audio("audio/dog.mp3");
-        
+
         audio.play().catch(e => {
             console.log(e);
         });
-        
+
         audio.onended = () => {
             dogCooldown = false;
         };
-        
+
         setTimeout(() => {
             dogCooldown = false;
         }, 3000); 
@@ -1576,4 +1577,4 @@ function miragepro() {
 
 </body>
 </html>
-
+~
