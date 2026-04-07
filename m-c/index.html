@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mirage Controller</title>
+    <link rel="icon" type="image/png" sizes="64x64" href="images/favicon-64.png">
+    <style>
+        :root {
+            --neon-blue: #00CFFF;
+            --neon-purple: #9D00FF;
+            --deep-space: #020205;
+            --surface: #0a0a12;
+            --accent-gradient: linear-gradient(135deg, #00CFFF 0%, #007ACC 100%);
+            --glass: rgba(5, 5, 15, 0.8);
+            --border-glass: rgba(0, 207, 255, 0.25);
+            --text-main: #e0e0e0;
+            --text-dim: #888899;
+            --transition-speed: 0.4s;
+        }
+
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--deep-space);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            cursor: default;
+        }
+
+        .bg-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(0, 207, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(157, 0, 255, 0.05) 0%, transparent 40%);
+            z-index: -2;
+        }
+
+        .crt-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%);
+            background-size: 100% 4px;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 10px 30px;
+            border-radius: 100px;
+            z-index: 2000;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 207, 255, 0.1);
+        }
+
+        .nav-link {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 8px 12px;
+            transition: var(--transition-speed);
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--neon-blue);
+            text-shadow: 0 0 8px rgba(0, 207, 255, 0.6);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .hero-glitch {
+            font-size: clamp(3rem, 10vw, 6.5rem);
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff 30%, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(0, 207, 255, 0.3));
+            letter-spacing: -2px;
+        }
+
+        .hero-sub {
+            font-family: 'Courier New', monospace;
+            color: var(--neon-blue);
+            font-size: 1.2rem;
+            margin: 20px 0 40px;
+            opacity: 0.8;
+            max-width: 600px;
+        }
+
+        .badge-pro {
+            background: rgba(0, 207, 255, 0.1);
+            border: 1px solid var(--neon-blue);
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 207, 255, 0.2);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-mirage {
+            position: relative;
+            padding: 18px 45px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #fff;
+            background: transparent;
+            border: 1px solid var(--neon-blue);
+            cursor: pointer;
+            overflow: hidden;
+            transition: var(--transition-speed);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-mirage::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            transition: var(--transition-speed);
+            z-index: -1;
+        }
+
+        .btn-mirage:hover {
+            color: #000;
+            box-shadow: 0 0 40px rgba(0, 207, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .btn-mirage:hover::before {
+            left: 0;
+        }
+
+        .btn-secondary {
+            padding: 18px 45px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: var(--transition-speed);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .section {
+            padding: 120px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 80px;
+            font-weight: 800;
+        }
+
+        .video-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 10px;
+            background: linear-gradient(var(--border-glass), transparent);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-ratio {
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 150px;
+            margin-top: 50px;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+        }
+
+        .feature-row.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-text h3 {
+            font-size: 2.5rem;
+            color: var(--neon-blue);
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+        .feature-text p {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            line-height: 1.8;
+        }
+
+        .feature-visual {
+            flex: 1.2;
+            position: relative;
+        }
+
+        .visual-card {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            background: #11111d;
+            border: 1px solid var(--border-glass);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            transition: var(--transition-speed);
+        }
+
+        .visual-card:hover {
+            transform: perspective(1000px) rotateY(-5deg) translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: -20px 20px 60px rgba(0, 207, 255, 0.15);
+        }
+
+        .visual-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+            filter: grayscale(100%) brightness(1.2);
+            transition: var(--transition-speed);
+        }
+
+        .visual-card:hover img {
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+        }
+
+        .workshop {
+            padding: 150px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border-glass);
+            border-bottom: 1px solid var(--border-glass);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .marquee-container {
+            position: absolute;
+            width: 100%;
+            overflow: hidden;
+            user-select: none;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .marquee-top { top: 40px; }
+        .marquee-bottom { bottom: 40px; }
+
+        .marquee-content {
+            display: flex;
+            gap: 50px;
+            white-space: nowrap;
+            font-family: 'Courier New', monospace;
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        .animate-left { animation: scrollLeft 40s linear infinite; }
+        .animate-right { animation: scrollRight 40s linear infinite; }
+
+        @keyframes scrollLeft {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        @keyframes scrollRight {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+
+        .workshop-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        .pricing-section {
+            padding: 100px 5%;
+        }
+
+        .pricing-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 60px;
+        }
+
+        .price-card {
+            background: var(--surface);
+            border: 1px solid var(--border-glass);
+            padding: 60px 40px;
+            border-radius: 25px;
+            width: 380px;
+            text-align: center;
+            transition: var(--transition-speed);
+            position: relative;
+        }
+
+        .price-card:hover {
+            transform: translateY(-15px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .price-card.featured {
+            background: linear-gradient(180deg, #0a0a1a 0%, #05050a 100%);
+            border: 2px solid var(--neon-blue);
+        }
+
+        .price-card.featured::after {
+            content: 'Payment via KO-FI';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon-blue);
+            color: #000;
+            padding: 5px 20px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            border-radius: 4px;
+            letter-spacing: 2px;
+        }
+
+        .price-header h3 {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin: 0;
+        }
+
+        .price-value {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 25px 0;
+            color: #fff;
+        }
+
+        .price-value span {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+        }
+
+        .price-features {
+            list-style: none;
+            padding: 0;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            color: var(--text-dim);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .price-features li::before {
+            content: '✓';
+            color: var(--neon-blue);
+            font-weight: bold;
+        }
+
+        .footer {
+            padding: 80px 5% 40px;
+            background: #05050a;
+            text-align: center;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .social-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: var(--transition-speed);
+        }
+
+        .social-links a:hover {
+            color: var(--neon-blue);
+        }
+
+        .btn-portal {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            transition: var(--transition-speed);
+        }
+
+        .btn-portal:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .feature-row, .feature-row.reverse {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+            }
+            .feature-visual { width: 100%; }
+        }
+
+        @media (max-width: 768px) {
+            .navbar { width: 95%; gap: 5px; padding: 5px 15px; }
+            .nav-link { font-size: 0.6rem; letter-spacing: 1px; padding: 5px; }
+            .hero-glitch { font-size: 3.5rem; }
+            .pricing-wrapper { gap: 40px; }
+            .price-card { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-mesh"></div>
+    <div class="crt-overlay"></div>
+
+    <a href="https://teammiragegj.github.io/Web/#herramientas" class="btn-portal">← RETURN</a>
+
+    <nav class="navbar">
+        <a href="#inicio" class="nav-link active">Home</a>
+        <a href="#trailer" class="nav-link">Trailer</a>
+        <a href="#funciones" class="nav-link">Features</a>
+        <a href="#workshop" class="nav-link">Workshop</a>
+        <a href="#precios" class="nav-link">Access</a>
+    </nav>
+
+    <header class="hero" id="inicio">
+        <div class="badge-pro">PLACEHOLDER</div>
+        <h1 class="hero-glitch">MIRAGE CONTROLLER</h1>
+        <p class="hero-sub">>_ Zero latency controls. Infinite possibilities. Elevate your broadcast experience to the next level.</p>
+        <div class="btn-group">
+            <a href="#precios" class="btn-mirage">GET LICENSE</a>
+            <a href="#funciones" class="btn-secondary">SYSTEM SPECS</a>
+        </div>
+    </header>
+
+    <section class="section" id="trailer">
+        <h2 class="section-title">Trailer</h2>
+        <div class="video-container">
+            <div class="video-ratio">
+                <iframe width="100%" height="100%" src="https://www.youtube.com/embed/" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="funciones">
+        <h2 class="section-title">FUNCTIONS</h2>
+        
+        <div class="feature-grid">
+            <div class="feature-row">
+                <div class="feature-text">
+                    <h3>Control EVERYTHING</h3>
+                    <p>----</p>
+                </div>
+                <div class="feature-visual">
+                    <div class="visual-card">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800" alt="Image 1">
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-row reverse">
+                <div class="feature-text">
+                    <h3>Interactive Overlays</h3>
+                    <p>----</p>
+                </div>
+                <div class="feature-visual">
+                    <div class="visual-card">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800" alt="Macros">
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-row">
+                <div class="feature-text">
+                    <h3>Always Protected</h3>
+                    <p>----</p>
+                </div>
+                <div class="feature-visual">
+                    <div class="visual-card">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800" alt="CPU">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="workshop" id="workshop">
+        <div class="marquee-container marquee-top">
+            <div class="marquee-content animate-left">
+                <span>!CRAZYMODE</span> <span>!SETVOL100</span> <span>!TWEETLIVE</span> <span>!GHOSTMODE</span> <span>!SLEEP</span> <span>!POST</span> <span>!OVERLAY</span> <span>!ANYTHIG</span>
+            </div>
+        </div>
+
+        <div class="workshop-content">
+            <h2 style="font-size: 4rem; margin: 0; font-weight: 900; letter-spacing: -2px;">WORKSHOP</h2>
+            <p style="color: var(--neon-blue); letter-spacing: 5px; font-weight: 800; margin-bottom: 40px;">COMMUNITY SCRIPTS</p>
+            <p style="max-width: 700px; margin: 0 auto 50px; color: var(--text-dim);">Access a lot of custom-made scripts from users worldwide. Extend Mirage's control capabilities with one click.</p>
+            <a href="https://valens429.github.io/Mirage-Controller-Workshop/" class="btn-mirage">BROWSE COMMANDS</a>
+        </div>
+
+        <div class="marquee-container marquee-bottom">
+            <div class="marquee-content animate-right">
+                <span>!IZQCLICK</span> <span>!MUTE</span> <span>!ENDOBS</span> <span>!FPS20</span> <span>!POWEROFF</span> <span>!RANDOMCOMMAND</span> <span>!BACKGROUND</span> <span>!WIFIOFF</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing-section" id="precios">
+        <h2 class="section-title">SYSTEM ACCESS</h2>
+        <div class="pricing-wrapper">
+            <div class="price-card">
+                <div class="price-header">
+                    <h3>Test the app!</h3>
+                </div>
+                <div class="price-value">FREE<span></span></div>
+                <ul class="price-features">
+                    <li>Essential Commands</li>
+                    <li>Overlay Test</li>
+                    <li>Integrated Presets</li>
+                    <li>Discord Support</li>
+					<li>Unlimited Access</li>
+                </ul>
+                <a href="#" class="btn-secondary" style="width: 100%; text-align: center;">Download Now</a>
+            </div>
+
+            <div class="price-card featured">
+                <div class="price-header">
+                    <h3>License</h3>
+                </div>
+                <div class="price-value">$3<span>/lifetime</span></div>
+                <ul class="price-features">
+                    <li>Custom Commands</li>
+                    <li>Unlimited Workshop Access</li>
+                    <li>Full Access To Integrated Commands And Overlays</li>
+                    <li>Customized Protections</li>
+                    <li>Custom Presets</li>
+                </ul>
+                <a href="https://ko-fi.com/s/a871eaf7ac" class="btn-mirage" style="width: 100%; text-align: center;">Get full access</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://discord.gg/FUShNmh9Md">Discord</a>
+            <a href="https://gamejolt.com/@MirageTeam">GameJolt</a>
+            <a href="https://www.youtube.com/@MirageTeamGJ">YouTube</a>
+            <a href="https://linktr.ee/MirageTeam1">Linktree</a>
+        </div>
+        <p style="color: #222; font-size: 0.65rem; letter-spacing: 4px; font-weight: 800;">
+            MIRAGE CONTROLLER // BUILT BY TEAM MIRAGE // COPYRIGHT 2026
+        </p>
+    </footer>
+
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playInterfaceSound(freq, volume = 0.03) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        }
+
+        document.querySelectorAll('a, button, .visual-card, .price-card').forEach(el => {
+            el.addEventListener('mouseenter', () => playInterfaceSound(800));
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            document.querySelectorAll('section, header').forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
